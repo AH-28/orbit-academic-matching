@@ -1,6 +1,7 @@
 import java.util.*;
 
 enum MeetingPreference { ONLINE, IN_PERSON, HYBRID }
+//Academic Tinder... ORBIT
 //ahhhhhhhhhh
 // Base class for all users
 class AcademicUser {
