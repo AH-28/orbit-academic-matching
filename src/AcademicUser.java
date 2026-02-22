@@ -1,7 +1,7 @@
 import java.util.*;
 
 enum MeetingPreference { ONLINE, IN_PERSON, HYBRID }
-//ahhhhhhhhhh
+//Commit 1
 // Base class for all users
 class AcademicUser {
     private String userId;
