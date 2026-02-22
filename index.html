@@ -17,7 +17,7 @@
             display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box;
         }
 
-        /* Solid White Container (Original Style) */
+        /* Solid White Container */
         .app-container { 
             background: white; 
             width: 100%; max-width: 500px; border-radius: 20px; 
@@ -52,6 +52,10 @@
         .btn-success { background: #4f46e5; color: white; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2); }
         .btn-success:hover { background: #4338ca; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(79, 70, 229, 0.3); }
         .btn-small { padding: 8px 12px; font-size: 13px; width: auto; display: inline-block; margin-top: 5px; }
+        .btn-outline { background: transparent; border: 1px solid #4f46e5; color: #4f46e5; }
+        .btn-outline:hover { background: #4f46e5; color: white; }
+        .btn-text { background: transparent; color: #6b7280; font-size: 13px; padding: 5px; border: none; cursor: pointer; }
+        .btn-text:hover { color: #111827; text-decoration: underline; }
 
         /* Navigation */
         .page { display: none; }
@@ -68,14 +72,23 @@
         /* Match Cards */
         .match-card { background: #f9fafb; border: 1px solid #e5e7eb; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; align-items: flex-start; gap: 15px;}
         .match-info { flex: 1; }
-        .match-name { font-weight: bold; font-size: 16px; color: #111827; }
+        .match-name { font-weight: bold; font-size: 16px; color: #111827; cursor: pointer; }
+        .match-name:hover { text-decoration: underline; color: #4f46e5; }
         .match-tags { font-size: 12px; color: #6b7280; margin-top: 5px; line-height: 1.4;}
-        .match-score { color: #059669; font-weight: bold; font-size: 13px; margin-top: 8px; background: #d1fae5; display: inline-block; padding: 4px 8px; border-radius: 8px;}
+        .match-score { color: #059669; font-weight: bold; font-size: 13px; margin-top: 8px; margin-bottom: 8px; background: #d1fae5; display: inline-block; padding: 4px 8px; border-radius: 8px;}
 
-        /* --- CHAT WIDGET & FAB STYLES --- */
+        /* --- PROFILE MODAL (POPUP) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; box-sizing: border-box; backdrop-filter: blur(3px);}
+        .modal-content { background: white; padding: 30px; border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative; animation: fadeIn 0.2s ease-out; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; color: #9ca3af; line-height: 1;}
+        .close-modal:hover { color: #111827; }
+        .modal-detail-row { margin-bottom: 12px; font-size: 14px; line-height: 1.5; color: #374151;}
+        .modal-detail-row strong { color: #111827; display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;}
+
+        /* --- CHAT WIDGET --- */
         .chat-fab {
             position: fixed; bottom: 30px; right: 30px; background: #4f46e5; color: white;
-            width: 65px; height: 65px; border-radius: 50%; display: none; /* Hidden until logged in */
+            width: 65px; height: 65px; border-radius: 50%; display: none; 
             justify-content: center; align-items: center; font-size: 28px; cursor: pointer;
             box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4); z-index: 1000; transition: transform 0.2s;
         }
@@ -98,7 +111,9 @@
         .contact-item { padding: 15px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.2s;}
         .contact-item:hover { background: #f9fafb; }
         .contact-avatar { width: 40px; height: 40px; border-radius: 50%; background: #d1d5db; object-fit: cover;}
-        .contact-name { font-weight: bold; color: #111827; font-size: 14px;}
+        .contact-name { font-weight: bold; color: #111827; font-size: 14px; flex: 1;}
+        .contact-info-btn { font-size: 16px; color: #6b7280; padding: 5px; border-radius: 50%; }
+        .contact-info-btn:hover { background: #e5e7eb; color: #4f46e5; }
         
         .chat-messages { flex: 1; padding: 15px; overflow-y: auto; background: #f9fafb; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
         .message-bubble { padding: 10px 15px; border-radius: 18px; max-width: 80%; line-height: 1.4; word-wrap: break-word;}
@@ -126,7 +141,6 @@
         </div>
 
         <div id="page-login" class="page">
-            <img src="Orbit Symbol 3.png" alt="Logo" style="width: 150px; display: block; margin: 0 auto;">
             <span class="back-link" onclick="goToPage('page-landing')">← Back</span>
             <h2>Welcome Back</h2>
             <p class="subtitle">Log in using your email and password</p>
@@ -137,7 +151,6 @@
         </div>
 
         <div id="page-role-select" class="page">
-            <img src="Orbit Symbol 3.png" alt="Logo" style="width: 150px; display: block; margin: 0 auto;">
             <span class="back-link" onclick="goToPage('page-landing')">← Back</span>
             <h2>Join Orbit</h2>
             <p class="subtitle">How would you like to use the platform?</p>
@@ -146,7 +159,6 @@
         </div>
 
         <div id="page-signup" class="page">
-            <img src="Orbit Symbol 3.png" alt="Logo" style="width: 150px; display: block; margin: 0 auto;">
             <span class="back-link" onclick="goToPage('page-role-select')">← Back</span>
             <h2 id="signup-title">Create Profile</h2>
             
@@ -181,8 +193,10 @@
                 <option value="Senior">Senior Level (8+ years)</option>
             </select>
 
-            <span class="section-label">Lived Experiences / Identity</span>
-            <div class="checkbox-group" id="reg-identities">
+            <span class="section-label">Cultural Background & Identity</span>
+            <input type="text" id="reg-culture" placeholder="Cultural Background (e.g. Hispanic, South Asian, etc.)">
+            
+            <div class="checkbox-group" id="reg-identities" style="margin-top: 10px;">
                 <input type="checkbox" id="id-fg" value="First-Gen"><label class="checkbox-label" for="id-fg">First-Gen</label>
                 <input type="checkbox" id="id-lgbt" value="LGBTQ+"><label class="checkbox-label" for="id-lgbt">LGBTQ+</label>
                 <input type="checkbox" id="id-wc" value="Working-Class"><label class="checkbox-label" for="id-wc">Working-Class</label>
@@ -205,10 +219,12 @@
         </div>
 
         <div id="page-dash-mentor" class="page">
-            <img src="Orbit Symbol 3.png" alt="Logo" style="width: 150px; display: block; margin: 0 auto;">
-            <span class="back-link" onclick="logout()" style="color: #dc2626; float: right;">Log Out</span>
-            <div class="profile-header">
-                <img src="" id="mentor-avatar" class="avatar" alt="Profile">
+            <div style="float: right;">
+                <button class="btn-text" onclick="openEditProfile()">✏️ Edit Profile</button>
+                <span class="back-link" onclick="logout()" style="color: #dc2626; margin-left: 10px;">Log Out</span>
+            </div>
+            <div class="profile-header" style="clear: both;">
+                <img src="" id="mentor-avatar" class="avatar" alt="Profile" style="cursor:pointer;" onclick="viewProfile(currentUserData.uid)">
                 <div>
                     <h2 id="mentor-greeting" style="margin:0; text-align: left;">Welcome!</h2>
                     <p style="margin: 3px 0 0 0; color: #6b7280; font-size: 14px;" id="mentor-role-text">Mentor Dashboard</p>
@@ -220,10 +236,12 @@
         </div>
 
         <div id="page-dash-mentee" class="page">
-            <img src="Orbit Symbol 3.png" alt="Logo" style="width: 150px; display: block; margin: 0 auto;">
-            <span class="back-link" onclick="logout()" style="color: #dc2626; float: right;">Log Out</span>
-            <div class="profile-header">
-                <img src="" id="mentee-avatar" class="avatar" alt="Profile">
+            <div style="float: right;">
+                <button class="btn-text" onclick="openEditProfile()">✏️ Edit Profile</button>
+                <span class="back-link" onclick="logout()" style="color: #dc2626; margin-left: 10px;">Log Out</span>
+            </div>
+            <div class="profile-header" style="clear: both;">
+                <img src="" id="mentee-avatar" class="avatar" alt="Profile" style="cursor:pointer;" onclick="viewProfile(currentUserData.uid)">
                 <div>
                     <h2 id="mentee-greeting" style="margin:0; text-align: left;">Welcome!</h2>
                     <p style="margin: 3px 0 0 0; color: #6b7280; font-size: 14px;">Mentee Dashboard</p>
@@ -233,14 +251,66 @@
             <button class="btn btn-success" onclick="goToPage('page-match')" style="margin-bottom: 20px;">🔍 Find a New Mentor Match</button>
             
             <h3>My Active Mentors</h3>
-            <img src="Orbit Symbol 3.png" alt="Logo" style="width: 150px; display: block; margin: 0 auto;">
             <div id="mentee-connections-area">
                 <p style='color: #6b7280; font-size: 14px;'>Check the chat button on the bottom right to see your connections!</p>
             </div>
         </div>
 
+        <div id="page-edit-profile" class="page">
+            <span class="back-link" onclick="loadAppropriateDashboard()">← Cancel</span>
+            <h2>Edit Profile</h2>
+            
+            <span class="section-label">Account Details</span>
+            <input type="text" id="edit-name" placeholder="Full Name">
+            <input type="url" id="edit-pic" placeholder="Profile Picture URL (Optional)">
+
+            <span class="section-label">Academic Details</span>
+            <select id="edit-field">
+                <option value="Computer Science">Computer Science</option>
+                <option value="Biology">Biology</option>
+                <option value="Law">Law</option>
+                <option value="Arts & Humanities">Arts & Humanities</option>
+                <option value="Engineering">Engineering</option>
+            </select>
+
+            <select id="edit-education">
+                <option value="Undergraduate">Undergraduate Student</option>
+                <option value="Bachelors">Bachelor's Degree</option>
+                <option value="Masters">Master's Degree</option>
+                <option value="PhD">PhD / Doctorate</option>
+            </select>
+
+            <select id="edit-experience">
+                <option value="Entry">Entry Level (0-2 years)</option>
+                <option value="Mid">Mid Level (3-7 years)</option>
+                <option value="Senior">Senior Level (8+ years)</option>
+            </select>
+
+            <span class="section-label">Cultural Background & Identity</span>
+            <input type="text" id="edit-culture" placeholder="Cultural Background">
+            
+            <div class="checkbox-group" id="edit-identities" style="margin-top: 10px;">
+                <input type="checkbox" id="eid-fg" value="First-Gen"><label class="checkbox-label" for="eid-fg">First-Gen</label>
+                <input type="checkbox" id="eid-lgbt" value="LGBTQ+"><label class="checkbox-label" for="eid-lgbt">LGBTQ+</label>
+                <input type="checkbox" id="eid-wc" value="Working-Class"><label class="checkbox-label" for="eid-wc">Working-Class</label>
+                <input type="checkbox" id="eid-nd" value="Neurodivergent"><label class="checkbox-label" for="eid-nd">Neurodivergent</label>
+            </div>
+
+            <span class="section-label">Soft Skills & Qualities</span>
+            <div class="multi-select-container">
+                <div class="checkbox-group" id="edit-skills">
+                    <input type="checkbox" id="esk-1" value="Leadership"><label class="checkbox-label" for="esk-1">Leadership</label>
+                    <input type="checkbox" id="esk-2" value="Empathy"><label class="checkbox-label" for="esk-2">Empathy</label>
+                    <input type="checkbox" id="esk-3" value="Career Planning"><label class="checkbox-label" for="esk-3">Career Planning</label>
+                    <input type="checkbox" id="esk-4" value="Technical Review"><label class="checkbox-label" for="esk-4">Technical Review</label>
+                    <input type="checkbox" id="esk-5" value="Work-Life Balance"><label class="checkbox-label" for="esk-5">Work-Life Balance</label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="saveProfileChanges()">Save Changes</button>
+        </div>
+
         <div id="page-match" class="page">
-            <img src="Orbit Symbol 3.png" alt="Logo" style="width: 150px; display: block; margin: 0 auto;">
             <span class="back-link" onclick="goToPage('page-dash-mentee')">← Back to Dashboard</span>
             <h2>Find Your Mentor</h2>
             <p class="subtitle">Select your preferences below to filter the database.</p>
@@ -263,8 +333,9 @@
                 <option value="Senior">Senior Level</option>
             </select>
 
-            <span class="section-label">Shared Lived Experiences (Prioritized):</span>
-            <div class="checkbox-group" id="match-identities">
+            <span class="section-label">Cultural Background & Experiences:</span>
+            <input type="text" id="match-culture" placeholder="Preferred Cultural Background (Optional)">
+            <div class="checkbox-group" id="match-identities" style="margin-top: 10px;">
                 <input type="checkbox" id="mf-fg" value="First-Gen"><label class="checkbox-label" for="mf-fg">First-Gen</label>
                 <input type="checkbox" id="mf-lgbt" value="LGBTQ+"><label class="checkbox-label" for="mf-lgbt">LGBTQ+</label>
                 <input type="checkbox" id="mf-wc" value="Working-Class"><label class="checkbox-label" for="mf-wc">Working-Class</label>
@@ -277,9 +348,24 @@
 
     </div>
 
+    <div id="profile-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeProfileModal()">×</span>
+            <img id="modal-avatar" class="avatar" style="width: 90px; height: 90px; margin: 0 auto; display: block;" alt="Avatar">
+            <h2 id="modal-name" style="text-align: center; margin-top: 15px; margin-bottom: 5px;"></h2>
+            <p id="modal-role" style="text-align: center; color: #4f46e5; font-size: 14px; font-weight: bold; margin-top: 0;"></p>
+            
+            <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+            
+            <div id="modal-details">
+                </div>
+        </div>
+    </div>
+
     <div class="chat-fab" id="chat-fab" onclick="toggleChatWidget()">💬</div>
 
     <div id="chat-widget" class="chat-widget">
+        
         <div id="chat-list-view" class="chat-view active">
             <div class="chat-header">
                 <span>Your Connections</span>
@@ -324,6 +410,7 @@
         // Global State
         let currentUserData = null;
         let selectedSignupRole = '';
+        let userCache = {}; 
 
         // Chat Variables
         let currentActiveChatUserId = null; 
@@ -336,17 +423,15 @@
                     if (doc.exists) {
                         currentUserData = doc.data();
                         currentUserData.uid = user.uid;
+                        userCache[user.uid] = currentUserData; 
                         
-                        // Show the FAB when logged in!
                         document.getElementById('chat-fab').style.display = 'flex'; 
-                        
                         loadAppropriateDashboard();
-                        loadContactList(); // Load past chats
+                        loadContactList();
                     }
                 });
             } else {
                 currentUserData = null;
-                // Hide the FAB and Chat Widget when logged out
                 document.getElementById('chat-fab').style.display = 'none'; 
                 document.getElementById('chat-widget').style.display = 'none';
                 goToPage('page-landing');
@@ -391,10 +476,11 @@
                 field: document.getElementById('reg-field').value,
                 education: document.getElementById('reg-education').value,
                 experience: document.getElementById('reg-experience').value,
+                culture: document.getElementById('reg-culture').value.trim(),
                 identities: Array.from(document.querySelectorAll('#reg-identities input:checked')).map(cb => cb.value),
                 skills: Array.from(document.querySelectorAll('#reg-skills input:checked')).map(cb => cb.value),
                 requests: [], 
-                connections: [], // Added connections array for chat
+                connections: [], 
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
 
@@ -433,6 +519,63 @@
             }
         }
 
+        // --- EDIT PROFILE LOGIC ---
+        function openEditProfile() {
+            // Fill inputs with current data
+            document.getElementById('edit-name').value = currentUserData.name || '';
+            document.getElementById('edit-pic').value = currentUserData.picUrl || '';
+            document.getElementById('edit-field').value = currentUserData.field || '';
+            document.getElementById('edit-education').value = currentUserData.education || '';
+            document.getElementById('edit-experience').value = currentUserData.experience || '';
+            document.getElementById('edit-culture').value = currentUserData.culture || '';
+
+            // Reset checkboxes
+            document.querySelectorAll('#edit-identities input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('#edit-skills input[type="checkbox"]').forEach(cb => cb.checked = false);
+
+            // Re-check saved boxes
+            if(currentUserData.identities) {
+                currentUserData.identities.forEach(id => {
+                    let cb = document.querySelector(`#edit-identities input[value="${id}"]`);
+                    if(cb) cb.checked = true;
+                });
+            }
+            if(currentUserData.skills) {
+                currentUserData.skills.forEach(sk => {
+                    let cb = document.querySelector(`#edit-skills input[value="${sk}"]`);
+                    if(cb) cb.checked = true;
+                });
+            }
+
+            goToPage('page-edit-profile');
+        }
+
+        function saveProfileChanges() {
+            const updatedData = {
+                name: document.getElementById('edit-name').value,
+                picUrl: document.getElementById('edit-pic').value || currentUserData.picUrl,
+                field: document.getElementById('edit-field').value,
+                education: document.getElementById('edit-education').value,
+                experience: document.getElementById('edit-experience').value,
+                culture: document.getElementById('edit-culture').value.trim(),
+                identities: Array.from(document.querySelectorAll('#edit-identities input:checked')).map(cb => cb.value),
+                skills: Array.from(document.querySelectorAll('#edit-skills input:checked')).map(cb => cb.value)
+            };
+
+            db.collection("users").doc(currentUserData.uid).update(updatedData)
+                .then(() => {
+                    // Update local objects
+                    Object.assign(currentUserData, updatedData);
+                    userCache[currentUserData.uid] = currentUserData;
+                    
+                    alert("Profile updated successfully!");
+                    loadAppropriateDashboard(); 
+                })
+                .catch(err => {
+                    alert("Error updating profile: " + err.message);
+                });
+        }
+
         function loadMentorRequests() {
             db.collection("users").doc(currentUserData.uid).onSnapshot(doc => {
                 const data = doc.data();
@@ -448,9 +591,12 @@
                 data.requests.forEach(req => {
                     reqArea.innerHTML += `
                         <div class="dash-card">
-                            <strong>${req.menteeName}</strong> requested to connect.
+                            <strong class="match-name" onclick="viewProfile('${req.menteeId}')">${req.menteeName}</strong> requested to connect.
                             <p style="margin: 5px 0; font-size: 12px; color: #4f46e5;">Match Score: ${req.score} 🔥</p>
-                            <button class="btn btn-primary btn-small" onclick="acceptRequest('${req.menteeId}', '${req.menteeName}')">Accept & Connect</button>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button class="btn btn-primary btn-small" onclick="acceptRequest('${req.menteeId}', '${req.menteeName}')">Accept</button>
+                                <button class="btn btn-outline btn-small" onclick="viewProfile('${req.menteeId}')">View Profile</button>
+                            </div>
                         </div>
                     `;
                 });
@@ -459,13 +605,11 @@
 
         // --- CONNECTION LOGIC ---
         function acceptRequest(menteeId, menteeName) {
-            // Add mentee to Mentor's connections and remove from requests
             db.collection("users").doc(currentUserData.uid).update({
                 connections: firebase.firestore.FieldValue.arrayUnion({ id: menteeId, name: menteeName }),
                 requests: currentUserData.requests.filter(r => r.menteeId !== menteeId) 
             });
 
-            // Add Mentor to Mentee's connections
             db.collection("users").doc(menteeId).update({
                 connections: firebase.firestore.FieldValue.arrayUnion({ id: currentUserData.uid, name: currentUserData.name })
             }).then(() => {
@@ -481,6 +625,7 @@
 
             const prefField = document.getElementById('match-field').value;
             const prefExp = document.getElementById('match-exp').value;
+            const prefCulture = document.getElementById('match-culture').value.trim().toLowerCase();
             const prefIdentities = Array.from(document.querySelectorAll('#match-identities input:checked')).map(cb => cb.value);
 
             db.collection("users").where("role", "==", "mentor").get().then(snapshot => {
@@ -491,12 +636,19 @@
                     let score = 0;
                     let reasons = [];
 
+                    userCache[doc.id] = mentor;
+
                     if (mentor.identities) {
                         const sharedIds = prefIdentities.filter(id => mentor.identities.includes(id));
                         if (sharedIds.length > 0) { 
                             score += sharedIds.length * 40; 
                             reasons.push(`Shared Identity: ${sharedIds.join(", ")}`); 
                         }
+                    }
+                    
+                    if (prefCulture && mentor.culture && mentor.culture.toLowerCase().includes(prefCulture)) {
+                        score += 20;
+                        reasons.push(`Cultural Background`);
                     }
 
                     if (prefField !== "Any" && mentor.field === prefField) {
@@ -539,13 +691,15 @@
             scoredMentors.forEach(match => {
                 resultsDiv.innerHTML += `
                     <div class="match-card">
-                        <img src="${match.mentor.picUrl}" class="avatar" style="width: 50px; height: 50px;" alt="Avatar">
+                        <img src="${match.mentor.picUrl}" class="avatar" style="width: 50px; height: 50px; cursor: pointer;" alt="Avatar" onclick="viewProfile('${match.id}')">
                         <div class="match-info">
-                            <div class="match-name">${match.mentor.name} <span style="font-size: 12px; font-weight: normal; color: #6b7280;">(${match.mentor.experience})</span></div>
+                            <div class="match-name" onclick="viewProfile('${match.id}')">${match.mentor.name} <span style="font-size: 12px; font-weight: normal; color: #6b7280;">(${match.mentor.experience})</span></div>
                             <div class="match-tags">${match.mentor.field} • ${match.mentor.education}</div>
                             <div class="match-tags" style="color: #4f46e5; margin-top: 2px;">${match.reasons.join(" | ")}</div>
                             <div class="match-score">Score: ${match.score} 🔥</div>
+                            <br>
                             <button class="btn btn-secondary btn-small" onclick="sendRequest('${match.id}', ${match.score})">Send Request</button>
+                            <button class="btn btn-outline btn-small" onclick="viewProfile('${match.id}')">View Profile</button>
                         </div>
                     </div>
                 `;
@@ -566,6 +720,52 @@
             }).catch(err => alert("Error: " + err.message));
         }
 
+        // --- PROFILE MODAL LOGIC ---
+        async function viewProfile(uid) {
+            let user = userCache[uid];
+
+            if (!user) {
+                try {
+                    const doc = await db.collection("users").doc(uid).get();
+                    if (doc.exists) {
+                        user = doc.data();
+                        userCache[uid] = user;
+                    }
+                } catch (err) {
+                    console.error("Error fetching user:", err);
+                    return;
+                }
+            }
+
+            if (user) {
+                document.getElementById('modal-avatar').src = user.picUrl;
+                document.getElementById('modal-name').innerText = user.name;
+                document.getElementById('modal-role').innerText = user.role === 'mentor' ? 'Mentor' : 'Mentee';
+
+                let detailsHtml = `
+                    <div class="modal-detail-row"><strong>Academic Field</strong> ${user.field || 'Not specified'}</div>
+                    <div class="modal-detail-row"><strong>Education Level</strong> ${user.education || 'Not specified'}</div>
+                    <div class="modal-detail-row"><strong>Experience</strong> ${user.experience || 'Not specified'}</div>
+                    <div class="modal-detail-row"><strong>Cultural Background</strong> ${user.culture || 'Not specified'}</div>
+                `;
+
+                if(user.identities && user.identities.length > 0) {
+                    detailsHtml += `<div class="modal-detail-row"><strong>Lived Experiences</strong> ${user.identities.join(', ')}</div>`;
+                }
+                
+                if(user.skills && user.skills.length > 0) {
+                    detailsHtml += `<div class="modal-detail-row"><strong>Soft Skills & Focus</strong> ${user.skills.join(', ')}</div>`;
+                }
+
+                document.getElementById('modal-details').innerHTML = detailsHtml;
+                document.getElementById('profile-modal').style.display = 'flex';
+            }
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profile-modal').style.display = 'none';
+        }
+
         // --- REAL-TIME CHAT SYSTEM ---
         function toggleChatWidget() {
             const widget = document.getElementById('chat-widget');
@@ -576,7 +776,7 @@
         function showContactList() {
             document.getElementById('chat-message-view').classList.remove('active');
             document.getElementById('chat-list-view').classList.add('active');
-            if (currentChatUnsubscribe) currentChatUnsubscribe(); // Stop listening to old chat
+            if (currentChatUnsubscribe) currentChatUnsubscribe();
         }
 
         function loadContactList() {
@@ -592,9 +792,10 @@
                 listArea.innerHTML = "";
                 connections.forEach(contact => {
                     listArea.innerHTML += `
-                        <div class="contact-item" onclick="openActiveChat('${contact.id}', '${contact.name}')">
-                            <div class="contact-avatar" style="background-image: url('https://api.dicebear.com/7.x/initials/svg?seed=${contact.name}'); background-size: cover;"></div>
-                            <div class="contact-name">${contact.name}</div>
+                        <div class="contact-item">
+                            <div class="contact-avatar" style="background-image: url('https://api.dicebear.com/7.x/initials/svg?seed=${contact.name}'); background-size: cover;" onclick="viewProfile('${contact.id}')"></div>
+                            <div class="contact-name" onclick="openActiveChat('${contact.id}', '${contact.name}')">${contact.name}</div>
+                            <span class="contact-info-btn" onclick="viewProfile('${contact.id}')" title="View Profile">ℹ️</span>
                         </div>
                     `;
                 });
