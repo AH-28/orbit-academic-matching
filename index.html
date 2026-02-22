@@ -8,6 +8,7 @@
         /* Base & Background */
         body { 
             font-family: Arial, Helvetica, sans-serif, "Segoe UI", Roboto, sans-serif;
+            background-color: #e5e7eb;
             background-image: url('SL-112421-46970-16.jpg');
             background-size: cover; 
             background-position: center; 
@@ -35,10 +36,7 @@
         input:focus, select:focus { border-color: #4f46e5; }
 
         /* Custom Multi-Select List */
-        .multi-select-container {
-            border: 1px solid #d1d5db; border-radius: 10px; background: #f9fafb; max-height: 150px; overflow-y: auto; padding: 10px; margin-bottom: 15px;
-        }
-
+        .multi-select-container { border: 1px solid #d1d5db; border-radius: 10px; background: #f9fafb; max-height: 150px; overflow-y: auto; padding: 10px; margin-bottom: 15px; }
         .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
         .checkbox-label { background: #f3f4f6; padding: 8px 12px; border-radius: 20px; font-size: 13px; cursor: pointer; border: 1px solid #d1d5db; transition: 0.2s; color: #374151;}
         .checkbox-label:hover { background: #e5e7eb; }
@@ -46,27 +44,13 @@
         input[type="checkbox"]:checked + .checkbox-label { background: #4f46e5; color: white; border-color: #4f46e5; }
 
         /* Improved Buttons */
-        .btn { 
-            border: none; padding: 14px; width: 100%; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; margin-top: 10px; text-align: center; display: block; box-sizing: border-box;
-        }
-        .btn-primary { 
-            background: #111827; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .btn-primary:hover { 
-            background: #374151; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-        .btn-secondary { 
-            background: #f3f4f6; color: #111827; border: 1px solid #d1d5db;
-        }
-        .btn-secondary:hover { 
-            background: #e5e7eb; transform: translateY(-2px);
-        }
-        .btn-success { 
-            background: #4f46e5; color: white; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
-        }
-        .btn-success:hover {
-            background: #4338ca; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(79, 70, 229, 0.3);
-        }
+        .btn { border: none; padding: 14px; width: 100%; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; margin-top: 10px; text-align: center; display: block; box-sizing: border-box; }
+        .btn-primary { background: #111827; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-primary:hover { background: #374151; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+        .btn-secondary { background: #f3f4f6; color: #111827; border: 1px solid #d1d5db; }
+        .btn-secondary:hover { background: #e5e7eb; transform: translateY(-2px); }
+        .btn-success { background: #4f46e5; color: white; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2); }
+        .btn-success:hover { background: #4338ca; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(79, 70, 229, 0.3); }
         .btn-small { padding: 8px 12px; font-size: 13px; width: auto; display: inline-block; margin-top: 5px; }
 
         /* Navigation */
@@ -88,18 +72,42 @@
         .match-tags { font-size: 12px; color: #6b7280; margin-top: 5px; line-height: 1.4;}
         .match-score { color: #059669; font-weight: bold; font-size: 13px; margin-top: 8px; background: #d1fae5; display: inline-block; padding: 4px 8px; border-radius: 8px;}
 
-        /* Chat Widget Styles */
-        .chat-widget { position: fixed; bottom: 20px; right: 20px; width: 320px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: none; flex-direction: column; z-index: 1000; border: 1px solid #d1d5db; overflow: hidden;}
-        .chat-header { background: #111827; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 15px; }
-        .close-chat { cursor: pointer; color: #9ca3af; font-size: 18px; }
+        /* --- CHAT WIDGET & FAB STYLES --- */
+        .chat-fab {
+            position: fixed; bottom: 30px; right: 30px; background: #4f46e5; color: white;
+            width: 65px; height: 65px; border-radius: 50%; display: none; /* Hidden until logged in */
+            justify-content: center; align-items: center; font-size: 28px; cursor: pointer;
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4); z-index: 1000; transition: transform 0.2s;
+        }
+        .chat-fab:hover { transform: scale(1.05); }
+
+        .chat-widget { 
+            position: fixed; bottom: 110px; right: 30px; width: 340px; height: 450px; background: white; 
+            border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: none; 
+            flex-direction: column; z-index: 1000; border: 1px solid #e5e7eb; overflow: hidden;
+        }
+        
+        .chat-view { display: none; flex-direction: column; height: 100%; }
+        .chat-view.active { display: flex; }
+
+        .chat-header { background: #111827; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 16px; }
+        .close-chat { cursor: pointer; color: #9ca3af; font-size: 22px; line-height: 1;}
         .close-chat:hover { color: white; }
-        .chat-messages { padding: 15px; height: 250px; overflow-y: auto; background: #f9fafb; display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
-        .message-bubble { padding: 10px 14px; border-radius: 18px; max-width: 80%; line-height: 1.4; }
+        
+        .contact-list { flex: 1; overflow-y: auto; background: white; }
+        .contact-item { padding: 15px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.2s;}
+        .contact-item:hover { background: #f9fafb; }
+        .contact-avatar { width: 40px; height: 40px; border-radius: 50%; background: #d1d5db; object-fit: cover;}
+        .contact-name { font-weight: bold; color: #111827; font-size: 14px;}
+        
+        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; background: #f9fafb; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+        .message-bubble { padding: 10px 15px; border-radius: 18px; max-width: 80%; line-height: 1.4; word-wrap: break-word;}
         .msg-them { background: #e5e7eb; color: #111827; align-self: flex-start; border-bottom-left-radius: 4px; }
         .msg-me { background: #4f46e5; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .chat-input-area { display: flex; padding: 10px; background: white; border-top: 1px solid #e5e7eb; }
-        .chat-input-area input { flex: 1; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 20px; font-size: 13px; outline: none; background: #f9fafb;}
-        .chat-input-area button { background: none; border: none; color: #4f46e5; font-weight: bold; margin-left: 10px; cursor: pointer;}
+        
+        .chat-input-area { display: flex; padding: 12px; background: white; border-top: 1px solid #e5e7eb; }
+        .chat-input-area input { flex: 1; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 20px; font-size: 14px; outline: none; background: #f9fafb;}
+        .chat-input-area button { background: none; border: none; color: #4f46e5; font-weight: bold; margin-left: 10px; cursor: pointer; font-size: 14px;}
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
@@ -122,10 +130,8 @@
             <span class="back-link" onclick="goToPage('page-landing')">← Back</span>
             <h2>Welcome Back</h2>
             <p class="subtitle">Log in using your email and password</p>
-            
             <input type="email" id="login-email" placeholder="Email Address">
             <input type="password" id="login-password" placeholder="Password">
-            
             <button class="btn btn-primary" onclick="handleLogin()">Log In</button>
             <p id="login-error" style="color: #dc2626; font-size: 13px; margin-top: 10px; display: none; text-align: center;"></p>
         </div>
@@ -135,7 +141,6 @@
             <span class="back-link" onclick="goToPage('page-landing')">← Back</span>
             <h2>Join Orbit</h2>
             <p class="subtitle">How would you like to use the platform?</p>
-            
             <button class="btn btn-primary" onclick="startSignup('mentor')">I want to be a Mentor</button>
             <button class="btn btn-success" onclick="startSignup('mentee')">I am looking for a Mentor</button>
         </div>
@@ -209,8 +214,7 @@
             </div>
             
             <h3>Connection Requests <span class="badge" id="request-count">0</span></h3>
-            <div id="mentor-requests-area">
-                </div>
+            <div id="mentor-requests-area"></div>
         </div>
 
         <div id="page-dash-mentee" class="page">
@@ -224,10 +228,10 @@
             </div>
 
             <button class="btn btn-success" onclick="goToPage('page-match')" style="margin-bottom: 20px;">🔍 Find a New Mentor Match</button>
-
+            
             <h3>My Active Mentors</h3>
             <div id="mentee-connections-area">
-                <p style='color: #6b7280; font-size: 14px;'>You haven't connected with anyone yet. Hit the search button above!</p>
+                <p style='color: #6b7280; font-size: 14px;'>Check the chat button on the bottom right to see your connections!</p>
             </div>
         </div>
 
@@ -268,29 +272,47 @@
 
     </div>
 
+    <div class="chat-fab" id="chat-fab" onclick="toggleChatWidget()">💬</div>
+
     <div id="chat-widget" class="chat-widget">
-        <div class="chat-header">
-            <span id="chat-title">Chat</span>
-            <span class="close-chat" onclick="closeChat()">×</span>
+        
+        <div id="chat-list-view" class="chat-view active">
+            <div class="chat-header">
+                <span>Your Connections</span>
+                <span class="close-chat" onclick="toggleChatWidget()">×</span>
+            </div>
+            <div class="contact-list" id="contact-list-area">
+                <p style="padding: 15px; color: #6b7280; font-size: 13px; text-align: center;">No connections yet. Send or accept a request to start chatting!</p>
+            </div>
         </div>
-        <div class="chat-messages" id="chat-messages"></div>
-        <div class="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
-            <button onclick="sendChatMessage()">Send</button>
+
+        <div id="chat-message-view" class="chat-view">
+            <div class="chat-header">
+                <span onclick="showContactList()" style="cursor:pointer; margin-right:15px; font-size: 18px;">←</span>
+                <span id="active-chat-title" style="flex:1;">Chat</span>
+                <span class="close-chat" onclick="toggleChatWidget()">×</span>
+            </div>
+            <div class="chat-messages" id="active-chat-messages">
+                </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendRealMessage()">
+                <button onclick="sendRealMessage()">Send</button>
+            </div>
         </div>
+
     </div>
 
     <script>
         // --- 1. INITIALIZE FIREBASE ---
         const firebaseConfig = {
-  apiKey: "AIzaSyCYc7Rtg2zgYHZ7aB0I_XuNcfYY6KqjvtU",
-  authDomain: "orbit-5b9da.firebaseapp.com",
-  projectId: "orbit-5b9da",
-  storageBucket: "orbit-5b9da.firebasestorage.app",
-  messagingSenderId: "693627247813",
-  appId: "1:693627247813:web:cd2a95607ced08336824ac",
-  measurementId: "G-CETZX4QWWH"
-};
+            apiKey: "AIzaSyCYc7Rtg2zgYHZ7aB0I_XuNcfYY6KqjvtU",
+            authDomain: "orbit-5b9da.firebaseapp.com",
+            projectId: "orbit-5b9da",
+            storageBucket: "orbit-5b9da.firebasestorage.app",
+            messagingSenderId: "693627247813",
+            appId: "1:693627247813:web:cd2a95607ced08336824ac",
+            measurementId: "G-CETZX4QWWH"
+        };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -299,19 +321,30 @@
         let currentUserData = null;
         let selectedSignupRole = '';
 
+        // Chat Variables
+        let currentActiveChatUserId = null; 
+        let currentChatUnsubscribe = null;
+
         // --- AUTHENTICATION LISTENER ---
         auth.onAuthStateChanged(user => {
             if (user) {
-                // Fetch full profile from Firestore
                 db.collection("users").doc(user.uid).get().then(doc => {
                     if (doc.exists) {
                         currentUserData = doc.data();
                         currentUserData.uid = user.uid;
+                        
+                        // Show the FAB when logged in!
+                        document.getElementById('chat-fab').style.display = 'flex'; 
+                        
                         loadAppropriateDashboard();
+                        loadContactList(); // Load past chats
                     }
                 });
             } else {
                 currentUserData = null;
+                // Hide the FAB and Chat Widget when logged out
+                document.getElementById('chat-fab').style.display = 'none'; 
+                document.getElementById('chat-widget').style.display = 'none';
                 goToPage('page-landing');
             }
         });
@@ -356,7 +389,8 @@
                 experience: document.getElementById('reg-experience').value,
                 identities: Array.from(document.querySelectorAll('#reg-identities input:checked')).map(cb => cb.value),
                 skills: Array.from(document.querySelectorAll('#reg-skills input:checked')).map(cb => cb.value),
-                requests: [], // Array to hold incoming requests/connections
+                requests: [], 
+                connections: [], // Added connections array for chat
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
 
@@ -368,7 +402,6 @@
 
             auth.createUserWithEmailAndPassword(email, pass)
                 .then(userCredential => {
-                    // Save additional data to Firestore
                     return db.collection("users").doc(userCredential.user.uid).set(profileData);
                 })
                 .catch(error => {
@@ -379,7 +412,7 @@
 
         function logout() {
             auth.signOut();
-            closeChat();
+            document.getElementById('chat-widget').style.display = 'none';
         }
 
         // --- DASHBOARD LOADERS ---
@@ -397,7 +430,6 @@
         }
 
         function loadMentorRequests() {
-            // Realtime listener for requests
             db.collection("users").doc(currentUserData.uid).onSnapshot(doc => {
                 const data = doc.data();
                 const reqArea = document.getElementById('mentor-requests-area');
@@ -414,10 +446,27 @@
                         <div class="dash-card">
                             <strong>${req.menteeName}</strong> requested to connect.
                             <p style="margin: 5px 0; font-size: 12px; color: #4f46e5;">Match Score: ${req.score} 🔥</p>
-                            <button class="btn btn-primary btn-small" onclick="openChat('${req.menteeName}', 'Hi! I matched with you and would love to chat.')">Start Chat</button>
+                            <button class="btn btn-primary btn-small" onclick="acceptRequest('${req.menteeId}', '${req.menteeName}')">Accept & Connect</button>
                         </div>
                     `;
                 });
+            });
+        }
+
+        // --- CONNECTION LOGIC ---
+        function acceptRequest(menteeId, menteeName) {
+            // Add mentee to Mentor's connections and remove from requests
+            db.collection("users").doc(currentUserData.uid).update({
+                connections: firebase.firestore.FieldValue.arrayUnion({ id: menteeId, name: menteeName }),
+                requests: currentUserData.requests.filter(r => r.menteeId !== menteeId) 
+            });
+
+            // Add Mentor to Mentee's connections
+            db.collection("users").doc(menteeId).update({
+                connections: firebase.firestore.FieldValue.arrayUnion({ id: currentUserData.uid, name: currentUserData.name })
+            }).then(() => {
+                alert("Connection accepted! Check your chat button to message them.");
+                loadContactList();
             });
         }
 
@@ -430,7 +479,6 @@
             const prefExp = document.getElementById('match-exp').value;
             const prefIdentities = Array.from(document.querySelectorAll('#match-identities input:checked')).map(cb => cb.value);
 
-            // Fetch ALL mentors
             db.collection("users").where("role", "==", "mentor").get().then(snapshot => {
                 let scoredMentors = [];
 
@@ -439,7 +487,6 @@
                     let score = 0;
                     let reasons = [];
 
-                    // 1. Shared Identities (Heavy Weight: 40 points each)
                     if (mentor.identities) {
                         const sharedIds = prefIdentities.filter(id => mentor.identities.includes(id));
                         if (sharedIds.length > 0) { 
@@ -448,19 +495,16 @@
                         }
                     }
 
-                    // 2. Field Match (30 points)
                     if (prefField !== "Any" && mentor.field === prefField) {
                         score += 30;
                         reasons.push(`Same Field`);
                     }
 
-                    // 3. Experience Match (20 points)
                     if (prefExp !== "Any" && mentor.experience === prefExp) {
                         score += 20;
                         reasons.push(`Desired Experience Level`);
                     }
 
-                    // 4. Mentee's own skills overlap (Bonus 10 points per shared skill)
                     if (mentor.skills && currentUserData.skills) {
                         const sharedSkills = currentUserData.skills.filter(sk => mentor.skills.includes(sk));
                         if(sharedSkills.length > 0) {
@@ -518,29 +562,82 @@
             }).catch(err => alert("Error: " + err.message));
         }
 
-        // --- CHAT SYSTEM (Simplified Frontend Demo) ---
-        let currentChatUser = "";
-        function openChat(name, initialMsg) {
-            currentChatUser = name;
-            document.getElementById('chat-widget').style.display = 'flex';
-            document.getElementById('chat-title').innerText = name;
-            const messagesDiv = document.getElementById('chat-messages');
-            
-            messagesDiv.innerHTML = `<div class="message-bubble msg-them">${initialMsg}</div>`;
+        // --- REAL-TIME CHAT SYSTEM ---
+        function toggleChatWidget() {
+            const widget = document.getElementById('chat-widget');
+            widget.style.display = widget.style.display === 'flex' ? 'none' : 'flex';
+            if (widget.style.display === 'flex') showContactList();
         }
 
-        function sendChatMessage() {
+        function showContactList() {
+            document.getElementById('chat-message-view').classList.remove('active');
+            document.getElementById('chat-list-view').classList.add('active');
+            if (currentChatUnsubscribe) currentChatUnsubscribe(); // Stop listening to old chat
+        }
+
+        function loadContactList() {
+            db.collection("users").doc(currentUserData.uid).onSnapshot(doc => {
+                const connections = doc.data().connections || [];
+                const listArea = document.getElementById('contact-list-area');
+                
+                if (connections.length === 0) {
+                    listArea.innerHTML = '<p style="padding:15px; text-align:center; color:gray;">No connections yet.</p>';
+                    return;
+                }
+
+                listArea.innerHTML = "";
+                connections.forEach(contact => {
+                    listArea.innerHTML += `
+                        <div class="contact-item" onclick="openActiveChat('${contact.id}', '${contact.name}')">
+                            <div class="contact-avatar" style="background-image: url('https://api.dicebear.com/7.x/initials/svg?seed=${contact.name}'); background-size: cover;"></div>
+                            <div class="contact-name">${contact.name}</div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        function getChatRoomId(uid1, uid2) {
+            return uid1 < uid2 ? `${uid1}_${uid2}` : `${uid2}_${uid1}`;
+        }
+
+        function openActiveChat(otherUserId, otherUserName) {
+            document.getElementById('chat-list-view').classList.remove('active');
+            document.getElementById('chat-message-view').classList.add('active');
+            document.getElementById('active-chat-title').innerText = otherUserName;
+            
+            currentActiveChatUserId = otherUserId;
+            const roomId = getChatRoomId(currentUserData.uid, otherUserId);
+            const messagesDiv = document.getElementById('active-chat-messages');
+
+            currentChatUnsubscribe = db.collection("chats").doc(roomId).collection("messages")
+                .orderBy("timestamp", "asc")
+                .onSnapshot(snapshot => {
+                    messagesDiv.innerHTML = "";
+                    snapshot.forEach(doc => {
+                        const msg = doc.data();
+                        const isMe = msg.senderId === currentUserData.uid;
+                        messagesDiv.innerHTML += `<div class="message-bubble ${isMe ? 'msg-me' : 'msg-them'}">${msg.text}</div>`;
+                    });
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                });
+        }
+
+        function sendRealMessage() {
             const input = document.getElementById('chat-input');
             const text = input.value.trim();
-            if (!text) return;
+            if (!text || !currentActiveChatUserId) return;
 
-            const messagesDiv = document.getElementById('chat-messages');
-            messagesDiv.innerHTML += `<div class="message-bubble msg-me">${text}</div>`;
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            const roomId = getChatRoomId(currentUserData.uid, currentActiveChatUserId);
+
+            db.collection("chats").doc(roomId).collection("messages").add({
+                text: text,
+                senderId: currentUserData.uid,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
             input.value = "";
         }
-
-        function closeChat() { document.getElementById('chat-widget').style.display = 'none'; }
     </script>
 </body>
 </html>
