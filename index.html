@@ -55,13 +55,16 @@
         .chat-input-area input { flex: 1; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 20px; font-size: 13px; outline: none; background: #f9fafb;}
         .chat-input-area button { background: none; border: none; color: #4f46e5; font-weight: bold; margin-left: 10px; cursor: pointer; font-size: 14px;}
     </style>
+
+    <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
     <div class="app-container">
         
         <div id="page-home" class="page active">
-            <h2>Orbit</h2>
+            <h2>Academic Match</h2>
             <p class="subtitle">Connecting the academic community</p>
             <button class="btn btn-primary" onclick="goToPage('page-match')">Find a Mentor (Mentee)</button>
             <button class="btn btn-secondary" onclick="goToPage('page-signup')">Sign Up as Mentor</button>
@@ -149,15 +152,15 @@
     </div>
 
     <script>
-        // --- 1. INITIALIZE FIREBASE WITH YOUR UPDATED KEYS ---
+        // --- 1. INITIALIZE FIREBASE (Using your orbit-5b9da keys) ---
         const firebaseConfig = {
-            apiKey: "AIzaSyACiQg1a-8rgor7GyjBr1k_wN3ZB4IhdLA", // <-- Check if your friend generated a new apiKey for orbit-5b9da
+            apiKey: "AIzaSyACiQg1a-8rgor7GyjBr1k_wN3ZB4IhdLA", 
             authDomain: "orbit-5b9da.firebaseapp.com",
             projectId: "orbit-5b9da",
             storageBucket: "orbit-5b9da.firebasestorage.app",
-            messagingSenderId: "399971601597", // <-- Check if this changed
-            appId: "1:399971601597:web:6a3846804f35801214bbd4", // <-- Check if this changed
-            measurementId: "G-7XHJF7GEQ8" // <-- Check if this changed
+            messagingSenderId: "399971601597",
+            appId: "1:399971601597:web:6a3846804f35801214bbd4",
+            measurementId: "G-7XHJF7GEQ8" 
         };
         
         firebase.initializeApp(firebaseConfig);
@@ -167,13 +170,11 @@
         let allMentors = [];
 
         // --- 2. REAL-TIME CLOUD SYNC ---
-        // This listens to the database in the cloud 24/7.
         db.collection("mentors").onSnapshot((snapshot) => {
             allMentors = []; 
             
             if (snapshot.empty) {
                 console.log("Database is empty, setting up defaults...");
-                // If the cloud is empty, add some starter data
                 const defaultMentors = [
                     { name: "Dr. Sarah", identities: ["LGBTQ+", "Working-Class"], interest: "Computer Science", requests: [] },
                     { name: "Prof. John", identities: ["First-Gen", "Working-Class"], interest: "Biology", requests: [] }
@@ -187,7 +188,6 @@
                     allMentors.push(doc.data());
                 });
 
-                // Update dashboard instantly if the user is looking at it!
                 if (document.getElementById('page-dashboard').classList.contains('active')) {
                     loadDashboard();
                 }
@@ -203,8 +203,7 @@
 
         function login() {
             const name = document.getElementById('login-name').value;
-            const db = getDatabase();
-            const user = db.find(m => m.name.toLowerCase() === name.toLowerCase());
+            const user = allMentors.find(m => m.name.toLowerCase() === name.toLowerCase());
             if (user) {
                 localStorage.setItem('currentUser', user.name);
                 loadDashboard();
@@ -223,8 +222,8 @@
             const currentUserName = localStorage.getItem('currentUser');
             if (!currentUserName) return goToPage('page-home');
 
-            const db = getDatabase();
-            const myProfile = db.find(m => m.name === currentUserName);
+            const myProfile = allMentors.find(m => m.name === currentUserName);
+            if (!myProfile) return;
 
             document.getElementById('dash-greeting').innerText = `Hello, ${myProfile.name}`;
             document.getElementById('dash-field').innerText = `Field: ${myProfile.interest}`;
@@ -232,7 +231,7 @@
 
             const requestsDiv = document.getElementById('dash-requests');
             requestsDiv.innerHTML = "";
-            document.getElementById('request-count').innerText = myProfile.requests.length || 0;
+            document.getElementById('request-count').innerText = myProfile.requests ? myProfile.requests.length : 0;
 
             if (!myProfile.requests || myProfile.requests.length === 0) {
                 requestsDiv.innerHTML = "<p style='color: #6b7280; font-size: 14px;'>No pending requests right now.</p>";
@@ -243,7 +242,7 @@
                             <strong>${req.menteeName}</strong> wants to connect!
                             <p style="margin: 5px 0; font-size: 13px; color: #4f46e5;">Match Score: ${req.score} 🔥</p>
                             <p style="margin: 5px 0; font-size: 13px; font-style: italic;">"${req.message}"</p>
-                            <button class="btn btn-primary btn-small" onclick="acceptRequest(${index}, '${req.menteeName}', '${req.message}')">Accept</button>
+                            <button class="btn btn-primary btn-small" onclick="acceptRequest(${index}, '${req.menteeName.replace(/'/g, "\\'")}', '${req.message.replace(/'/g, "\\'")}')">Accept</button>
                             <button class="btn btn-secondary btn-small" onclick="declineRequest(${index})">Decline</button>
                         </div>
                     `;
@@ -267,7 +266,6 @@
                 ] 
             };
 
-            // Push the new user to the Cloud!
             db.collection("mentors").doc(name).set(newMentor).then(() => {
                 localStorage.setItem('currentUser', name);
                 document.getElementById('new-mentor-name').value = "";
@@ -287,13 +285,11 @@
 
             if (menteeIdentities.length === 0) return resultsDiv.innerHTML = "<p style='color:red;'>Select a marker.</p>";
 
-            const allMentors = getDatabase();
             let scoredMentors = [];
             
             allMentors.forEach(mentor => {
                 let score = 0;
                 let reasons = [];
-                // Check if identities exists before filtering
                 if(mentor.identities) {
                     const shared = menteeIdentities.filter(id => mentor.identities.includes(id));
                     if (shared.length > 0) { score += shared.length * 40; reasons.push(`Shared: ${shared.join(", ")}`); }
@@ -307,7 +303,6 @@
             if (scoredMentors.length === 0) return resultsDiv.innerHTML = "<p>No exact matches.</p>";
 
             scoredMentors.forEach(match => {
-                // Here is the newly wired "Request to Connect" button!
                 resultsDiv.innerHTML += `
                     <div class="match-card">
                         <div class="match-name">${match.mentor.name}</div>
@@ -319,17 +314,14 @@
             });
         }
 
-        // --- THE NEW TWO-WAY CONNECTION LOGIC ---
         function sendConnectionRequest(mentorName, matchScore) {
-            // 1. Ask the mentee for their details
             const menteeName = prompt("Enter your name so the mentor knows who you are:");
-            if (!menteeName) return; // If they click cancel, stop here.
+            if (!menteeName) return; 
 
             const defaultMsg = `Hi ${mentorName}! I saw we have a great match score and would love to connect.`;
             const message = prompt(`Add a short message for ${mentorName}:`, defaultMsg);
-            if (!message) return; // If they click cancel, stop here.
+            if (!message) return; 
 
-            // Update the specific mentor in the cloud!
             const mentorRef = db.collection("mentors").doc(mentorName);
             
             mentorRef.get().then((doc) => {
@@ -352,7 +344,6 @@
             });
         }
 
-        // --- CHAT & DASHBOARD LOGIC (Same as before) ---
         function declineRequest(index) {
             const currentUserName = localStorage.getItem('currentUser');
             const mentorRef = db.collection("mentors").doc(currentUserName);
@@ -362,7 +353,7 @@
                     let mentorData = doc.data();
                     if(mentorData.requests) {
                         mentorData.requests.splice(index, 1); 
-                        mentorRef.set(mentorData); // Save back to cloud
+                        mentorRef.set(mentorData); 
                     }
                 }
             });
@@ -418,28 +409,5 @@
         function closeChat() { document.getElementById('chat-widget').style.display = 'none'; }
         function handleEnterKey(event) { if (event.key === 'Enter') sendManualMessage(); }
     </script>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyACiQg1a-8rgor7GyjBr1k_wN3ZB4IhdLA",
-    authDomain: "orbit-d5471.firebaseapp.com",
-    projectId: "orbit-d5471",
-    storageBucket: "orbit-d5471.firebasestorage.app",
-    messagingSenderId: "399971601597",
-    appId: "1:399971601597:web:6a3846804f35801214bbd4",
-    measurementId: "G-7XHJF7GEQ8"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
 </body>
 </html>
