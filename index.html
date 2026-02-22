@@ -3,137 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orbit</title>
+    <title>Orbit - Find Your Academic Mentor</title>
     <style>
-        body { font-family: Arial, Helvetica, sans-serif, "Segoe UI", Roboto, sans-serif;background-image: url('SL-112421-46970-16.jpg');background-size: cover; background-position: center; background-repeat: no-repeat;  display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .app-container { background: white; width: 100%; max-width: 500px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 30px; position: center; margin-bottom: 80px;}
+        /* Base & Background */
+        body { 
+            font-family: Arial, Helvetica, sans-serif, "Segoe UI", Roboto, sans-serif;
+            background-image: url('SL-112421-46970-16.jpg');
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box;
+        }
+
+        /* Solid White Container (Original Style) */
+        .app-container { 
+            background: white; 
+            width: 100%; max-width: 500px; border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+            padding: 30px; position: relative; margin-bottom: 50px;
+        }
+
+        h1 { text-align: center; color: #111827; margin-bottom: 5px; font-size: 36px; }
         h2 { text-align: center; color: #111827; margin-bottom: 5px; }
-        p.subtitle { color: #6b7280; font-size: 14px; text-align: center; margin-bottom: 20px; }
+        p.subtitle { color: #6b7280; font-size: 14px; text-align: center; margin-bottom: 25px; }
+        .section-label { font-weight: bold; margin-top: 15px; display: block; color: #374151; font-size: 14px; margin-bottom: 8px;}
         
-        .section-label { font-weight: bold; margin-top: 20px; display: block; color: #374151; font-size: 14px; margin-bottom: 10px;}
-        input[type="text"], select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #d1d5db; font-size: 14px; background-color: #f9fafb; margin-bottom: 10px; box-sizing: border-box; }
-        
-        .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-        .checkbox-label { background: #f3f4f6; padding: 8px 12px; border-radius: 20px; font-size: 14px; cursor: pointer; border: 1px solid #d1d5db; transition: 0.2s; }
+        input[type="text"], input[type="email"], input[type="password"], input[type="url"], select { 
+            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #d1d5db; font-size: 14px; background-color: #f9fafb; margin-bottom: 10px; box-sizing: border-box; outline: none; transition: border-color 0.2s;
+        }
+        input:focus, select:focus { border-color: #4f46e5; }
+
+        /* Custom Multi-Select List */
+        .multi-select-container {
+            border: 1px solid #d1d5db; border-radius: 10px; background: #f9fafb; max-height: 150px; overflow-y: auto; padding: 10px; margin-bottom: 15px;
+        }
+
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+        .checkbox-label { background: #f3f4f6; padding: 8px 12px; border-radius: 20px; font-size: 13px; cursor: pointer; border: 1px solid #d1d5db; transition: 0.2s; color: #374151;}
         .checkbox-label:hover { background: #e5e7eb; }
         input[type="checkbox"] { display: none; }
         input[type="checkbox"]:checked + .checkbox-label { background: #4f46e5; color: white; border-color: #4f46e5; }
 
-        .btn { border: none; padding: 15px; width: 100%; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px; text-align: center; display: block;}
-        .btn-primary { background: #111827; color: white; }
-        .btn-primary:hover { background: #374151; }
-        .btn-secondary { background: #e5e7eb; color: #111827; }
-        .btn-secondary:hover { background: #d1d5db; }
-        .btn-small { padding: 8px; font-size: 12px; width: auto; display: inline-block; margin-top: 0; }
-        
-        .page { display: none; }
-        .page.active { display: block; }
-        .back-link { font-size: 14px; color: #4f46e5; cursor: pointer; display: inline-block; margin-bottom: 15px; text-decoration: underline; font-weight: bold;}
+        /* Improved Buttons */
+        .btn { 
+            border: none; padding: 14px; width: 100%; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; margin-top: 10px; text-align: center; display: block; box-sizing: border-box;
+        }
+        .btn-primary { 
+            background: #111827; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn-primary:hover { 
+            background: #374151; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .btn-secondary { 
+            background: #f3f4f6; color: #111827; border: 1px solid #d1d5db;
+        }
+        .btn-secondary:hover { 
+            background: #e5e7eb; transform: translateY(-2px);
+        }
+        .btn-success { 
+            background: #4f46e5; color: white; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+        }
+        .btn-success:hover {
+            background: #4338ca; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(79, 70, 229, 0.3);
+        }
+        .btn-small { padding: 8px 12px; font-size: 13px; width: auto; display: inline-block; margin-top: 5px; }
 
-        /* Dashboard & Cards */
+        /* Navigation */
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .back-link { font-size: 14px; color: #4f46e5; cursor: pointer; display: inline-block; margin-bottom: 15px; font-weight: bold; text-decoration: underline; }
+
+        /* Profiles & Dashboards */
+        .profile-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb; }
+        .avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; background: #d1d5db; border: 2px solid #4f46e5;}
         .dash-card { background: #f9fafb; border: 1px solid #e5e7eb; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-        .request-card { border-left: 4px solid #4f46e5; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .badge { background: #4f46e5; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: bold; float: right; }
-        .match-card { background: #f9fafb; border: 1px solid #e5e7eb; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
-        .match-name { font-weight: bold; font-size: 18px; color: #111827; }
-        .match-tags { font-size: 13px; color: #4f46e5; margin-top: 5px; font-weight: 500;}
-        .match-score { color: #059669; font-weight: bold; font-size: 14px; margin-top: 8px; }
+        .badge { background: #4f46e5; color: white; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; float: right; }
+        
+        /* Match Cards */
+        .match-card { background: #f9fafb; border: 1px solid #e5e7eb; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; align-items: flex-start; gap: 15px;}
+        .match-info { flex: 1; }
+        .match-name { font-weight: bold; font-size: 16px; color: #111827; }
+        .match-tags { font-size: 12px; color: #6b7280; margin-top: 5px; line-height: 1.4;}
+        .match-score { color: #059669; font-weight: bold; font-size: 13px; margin-top: 8px; background: #d1fae5; display: inline-block; padding: 4px 8px; border-radius: 8px;}
 
         /* Chat Widget Styles */
         .chat-widget { position: fixed; bottom: 20px; right: 20px; width: 320px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: none; flex-direction: column; z-index: 1000; border: 1px solid #d1d5db; overflow: hidden;}
         .chat-header { background: #111827; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 15px; }
         .close-chat { cursor: pointer; color: #9ca3af; font-size: 18px; }
         .close-chat:hover { color: white; }
-        .chat-messages { padding: 15px; height: 220px; overflow-y: auto; background: #f9fafb; display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
+        .chat-messages { padding: 15px; height: 250px; overflow-y: auto; background: #f9fafb; display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
         .message-bubble { padding: 10px 14px; border-radius: 18px; max-width: 80%; line-height: 1.4; }
-        .msg-mentee { background: #e5e7eb; color: #111827; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .msg-mentor { background: #4f46e5; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .quick-replies { display: flex; gap: 8px; padding: 10px; background: white; overflow-x: auto; white-space: nowrap; border-top: 1px solid #e5e7eb; }
-        .quick-reply-btn { background: white; border: 1px solid #4f46e5; color: #4f46e5; border-radius: 15px; padding: 6px 12px; font-size: 12px; cursor: pointer; flex-shrink: 0; font-weight: 500;}
-        .quick-reply-btn:hover { background: #4f46e5; color: white; }
+        .msg-them { background: #e5e7eb; color: #111827; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .msg-me { background: #4f46e5; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
         .chat-input-area { display: flex; padding: 10px; background: white; border-top: 1px solid #e5e7eb; }
         .chat-input-area input { flex: 1; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 20px; font-size: 13px; outline: none; background: #f9fafb;}
-        .chat-input-area button { background: none; border: none; color: #4f46e5; font-weight: bold; margin-left: 10px; cursor: pointer; font-size: 14px;}
+        .chat-input-area button { background: none; border: none; color: #4f46e5; font-weight: bold; margin-left: 10px; cursor: pointer;}
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-    <div class="app-container">
-        
-        <div id="page-home" class="page active">
-            <img src="Orbit Logo 3.png" alt="Logo" style="width: 100px; display: block; margin: 0 auto;">
+    <div class="app-container" id="main-container">
+
+        <div id="page-landing" class="page active">
+            <h1>Orbit</h1>
             <p class="subtitle">Connecting the academic community</p>
-            <button class="btn btn-primary" onclick="goToPage('page-match')">Find a Mentor (Mentee)</button>
-            <button class="btn btn-secondary" onclick="goToPage('page-signup')">Sign Up as Mentor</button>
-            <button class="btn btn-secondary" onclick="goToPage('page-login')">Log In to Dashboard</button>
+            <button class="btn btn-primary" onclick="goToPage('page-login')">Log In to Dashboard</button>
+            <button class="btn btn-secondary" onclick="goToPage('page-role-select')">Sign Up</button>
         </div>
 
         <div id="page-login" class="page">
-            <span class="back-link" onclick="goToPage('page-home')">← Back</span>
-            <h2>Log In</h2>
-            <p class="subtitle">Enter your name to access your dashboard</p>
-            <span class="section-label">Your Name:</span>
-            <input type="text" id="login-name" placeholder="e.g. Dr. Sarah">
-            <button class="btn btn-primary" onclick="login()">Log In</button>
+            <span class="back-link" onclick="goToPage('page-landing')">← Back</span>
+            <h2>Welcome Back</h2>
+            <p class="subtitle">Log in using your email and password</p>
+            
+            <input type="email" id="login-email" placeholder="Email Address">
+            <input type="password" id="login-password" placeholder="Password">
+            
+            <button class="btn btn-primary" onclick="handleLogin()">Log In</button>
+            <p id="login-error" style="color: #dc2626; font-size: 13px; margin-top: 10px; display: none; text-align: center;"></p>
+        </div>
+
+        <div id="page-role-select" class="page">
+            <span class="back-link" onclick="goToPage('page-landing')">← Back</span>
+            <h2>Join Orbit</h2>
+            <p class="subtitle">How would you like to use the platform?</p>
+            
+            <button class="btn btn-primary" onclick="startSignup('mentor')">I want to be a Mentor</button>
+            <button class="btn btn-success" onclick="startSignup('mentee')">I am looking for a Mentor</button>
         </div>
 
         <div id="page-signup" class="page">
-            <span class="back-link" onclick="goToPage('page-home')">← Back</span>
-            <h2>Become a Mentor</h2>
-            <span class="section-label">Your Name / Title:</span>
-            <input type="text" id="new-mentor-name" placeholder="e.g. Dr. Smith">
-            <span class="section-label">Your Academic Field:</span>
-            <select id="new-mentor-field">
+            <span class="back-link" onclick="goToPage('page-role-select')">← Back</span>
+            <h2 id="signup-title">Create Profile</h2>
+            
+            <span class="section-label">Account Details</span>
+            <input type="text" id="reg-name" placeholder="Full Name (e.g. Dr. Jane Smith)">
+            <input type="email" id="reg-email" placeholder="Email Address">
+            <input type="password" id="reg-password" placeholder="Password">
+            <input type="url" id="reg-pic" placeholder="Profile Picture URL (Optional)">
+
+            <span class="section-label">Academic Details</span>
+            <select id="reg-field">
+                <option value="" disabled selected>Select Primary Field</option>
                 <option value="Computer Science">Computer Science</option>
                 <option value="Biology">Biology</option>
                 <option value="Law">Law</option>
-                <option value="Arts">Arts & Humanities</option>
+                <option value="Arts & Humanities">Arts & Humanities</option>
+                <option value="Engineering">Engineering</option>
             </select>
-            <span class="section-label">Your Lived Experiences:</span>
-            <div class="checkbox-group" id="new-mentor-identities">
-                <input type="checkbox" id="m-fg" value="First-Gen"><label class="checkbox-label" for="m-fg">First-Gen</label>
-                <input type="checkbox" id="m-lgbt" value="LGBTQ+"><label class="checkbox-label" for="m-lgbt">LGBTQ+</label>
-                <input type="checkbox" id="m-wc" value="Working-Class"><label class="checkbox-label" for="m-wc">Working-Class</label>
-                <input type="checkbox" id="m-nd" value="Neurodivergent"><label class="checkbox-label" for="m-nd">Neurodivergent</label>
+
+            <select id="reg-education">
+                <option value="" disabled selected>Highest Education Level</option>
+                <option value="Undergraduate">Undergraduate Student</option>
+                <option value="Bachelors">Bachelor's Degree</option>
+                <option value="Masters">Master's Degree</option>
+                <option value="PhD">PhD / Doctorate</option>
+            </select>
+
+            <select id="reg-experience">
+                <option value="" disabled selected>Experience Level</option>
+                <option value="Entry">Entry Level (0-2 years)</option>
+                <option value="Mid">Mid Level (3-7 years)</option>
+                <option value="Senior">Senior Level (8+ years)</option>
+            </select>
+
+            <span class="section-label">Lived Experiences / Identity</span>
+            <div class="checkbox-group" id="reg-identities">
+                <input type="checkbox" id="id-fg" value="First-Gen"><label class="checkbox-label" for="id-fg">First-Gen</label>
+                <input type="checkbox" id="id-lgbt" value="LGBTQ+"><label class="checkbox-label" for="id-lgbt">LGBTQ+</label>
+                <input type="checkbox" id="id-wc" value="Working-Class"><label class="checkbox-label" for="id-wc">Working-Class</label>
+                <input type="checkbox" id="id-nd" value="Neurodivergent"><label class="checkbox-label" for="id-nd">Neurodivergent</label>
             </div>
-            <button class="btn btn-primary" onclick="saveMentor()">Create Profile</button>
+
+            <span class="section-label">Soft Skills & Qualities (Select Top 3)</span>
+            <div class="multi-select-container">
+                <div class="checkbox-group" id="reg-skills">
+                    <input type="checkbox" id="sk-1" value="Leadership"><label class="checkbox-label" for="sk-1">Leadership</label>
+                    <input type="checkbox" id="sk-2" value="Empathy"><label class="checkbox-label" for="sk-2">Empathy</label>
+                    <input type="checkbox" id="sk-3" value="Career Planning"><label class="checkbox-label" for="sk-3">Career Planning</label>
+                    <input type="checkbox" id="sk-4" value="Technical Review"><label class="checkbox-label" for="sk-4">Technical Review</label>
+                    <input type="checkbox" id="sk-5" value="Work-Life Balance"><label class="checkbox-label" for="sk-5">Work-Life Balance</label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="handleSignup()">Complete Registration</button>
+            <p id="signup-error" style="color: #dc2626; font-size: 13px; margin-top: 10px; display: none; text-align: center;"></p>
         </div>
 
-        <div id="page-dashboard" class="page">
-            <span class="back-link" onclick="logout()" style="color: #dc2626;">Log Out</span>
-            <h2 id="dash-greeting" style="text-align: left;">Welcome!</h2>
-            <div class="dash-card">
-                <span class="section-label" style="margin-top: 0;">Your Public Profile:</span>
-                <strong id="dash-field">Field</strong><br>
-                <span id="dash-tags" style="color: #6b7280; font-size: 13px;">Tags</span>
+        <div id="page-dash-mentor" class="page">
+            <span class="back-link" onclick="logout()" style="color: #dc2626; float: right;">Log Out</span>
+            <div class="profile-header">
+                <img src="" id="mentor-avatar" class="avatar" alt="Profile">
+                <div>
+                    <h2 id="mentor-greeting" style="margin:0; text-align: left;">Welcome!</h2>
+                    <p style="margin: 3px 0 0 0; color: #6b7280; font-size: 14px;" id="mentor-role-text">Mentor Dashboard</p>
+                </div>
             </div>
+            
             <h3>Connection Requests <span class="badge" id="request-count">0</span></h3>
-            <div id="dash-requests"></div>
+            <div id="mentor-requests-area">
+                </div>
+        </div>
+
+        <div id="page-dash-mentee" class="page">
+            <span class="back-link" onclick="logout()" style="color: #dc2626; float: right;">Log Out</span>
+            <div class="profile-header">
+                <img src="" id="mentee-avatar" class="avatar" alt="Profile">
+                <div>
+                    <h2 id="mentee-greeting" style="margin:0; text-align: left;">Welcome!</h2>
+                    <p style="margin: 3px 0 0 0; color: #6b7280; font-size: 14px;">Mentee Dashboard</p>
+                </div>
+            </div>
+
+            <button class="btn btn-success" onclick="goToPage('page-match')" style="margin-bottom: 20px;">🔍 Find a New Mentor Match</button>
+
+            <h3>My Active Mentors</h3>
+            <div id="mentee-connections-area">
+                <p style='color: #6b7280; font-size: 14px;'>You haven't connected with anyone yet. Hit the search button above!</p>
+            </div>
         </div>
 
         <div id="page-match" class="page">
-            <span class="back-link" onclick="goToPage('page-home')">← Back</span>
+            <span class="back-link" onclick="goToPage('page-dash-mentee')">← Back to Dashboard</span>
             <h2>Find Your Mentor</h2>
-            <span class="section-label">My Academic Field is:</span>
-            <select id="mentee-field">
+            <p class="subtitle">Select your preferences below to filter the database.</p>
+
+            <span class="section-label">Desired Academic Field:</span>
+            <select id="match-field">
                 <option value="Any">Does not matter / Any</option>
                 <option value="Computer Science">Computer Science</option>
                 <option value="Biology">Biology</option>
                 <option value="Law">Law</option>
-                <option value="Arts">Arts & Humanities</option>
+                <option value="Arts & Humanities">Arts & Humanities</option>
+                <option value="Engineering">Engineering</option>
             </select>
-            <span class="section-label">I identify as / have experience with:</span>
-            <div class="checkbox-group" id="mentee-identities">
-                <input type="checkbox" id="fg" value="First-Gen"><label class="checkbox-label" for="fg">First-Gen</label>
-                <input type="checkbox" id="lgbt" value="LGBTQ+"><label class="checkbox-label" for="lgbt">LGBTQ+</label>
-                <input type="checkbox" id="wc" value="Working-Class"><label class="checkbox-label" for="wc">Working-Class</label>
-                <input type="checkbox" id="nd" value="Neurodivergent"><label class="checkbox-label" for="nd">Neurodivergent</label>
+
+            <span class="section-label">Desired Mentor Experience:</span>
+            <select id="match-exp">
+                <option value="Any">Any Experience</option>
+                <option value="Entry">Entry Level</option>
+                <option value="Mid">Mid Level</option>
+                <option value="Senior">Senior Level</option>
+            </select>
+
+            <span class="section-label">Shared Lived Experiences (Prioritized):</span>
+            <div class="checkbox-group" id="match-identities">
+                <input type="checkbox" id="mf-fg" value="First-Gen"><label class="checkbox-label" for="mf-fg">First-Gen</label>
+                <input type="checkbox" id="mf-lgbt" value="LGBTQ+"><label class="checkbox-label" for="mf-lgbt">LGBTQ+</label>
+                <input type="checkbox" id="mf-wc" value="Working-Class"><label class="checkbox-label" for="mf-wc">Working-Class</label>
+                <input type="checkbox" id="mf-nd" value="Neurodivergent"><label class="checkbox-label" for="mf-nd">Neurodivergent</label>
             </div>
-            <button class="btn btn-primary" onclick="runMatchingAlgorithm()">Find Matches</button>
-            <div id="results"></div>
+
+            <button class="btn btn-primary" onclick="runMatchingAlgorithm()">Calculate Matches</button>
+            <div id="match-results" style="margin-top: 20px;"></div>
         </div>
 
     </div>
@@ -144,270 +272,272 @@
             <span class="close-chat" onclick="closeChat()">×</span>
         </div>
         <div class="chat-messages" id="chat-messages"></div>
-        <div class="quick-replies" id="quick-replies"></div>
         <div class="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="handleEnterKey(event)">
-            <button onclick="sendManualMessage()">Send</button>
+            <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+            <button onclick="sendChatMessage()">Send</button>
         </div>
     </div>
 
     <script>
-        // --- 1. INITIALIZE FIREBASE (Using your orbit-5b9da keys) ---
+        // --- 1. INITIALIZE FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyACiQg1a-8rgor7GyjBr1k_wN3ZB4IhdLA", 
             authDomain: "orbit-5b9da.firebaseapp.com",
             projectId: "orbit-5b9da",
             storageBucket: "orbit-5b9da.firebasestorage.app",
             messagingSenderId: "399971601597",
-            appId: "1:399971601597:web:6a3846804f35801214bbd4",
-            measurementId: "G-7XHJF7GEQ8" 
+            appId: "1:399971601597:web:6a3846804f35801214bbd4"
         };
-        
         firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // This variable holds a real-time copy of your cloud data
-        let allMentors = [];
+        // Global State
+        let currentUserData = null;
+        let selectedSignupRole = '';
 
-        // --- 2. REAL-TIME CLOUD SYNC ---
-        db.collection("mentors").onSnapshot((snapshot) => {
-            allMentors = []; 
-            
-            if (snapshot.empty) {
-                console.log("Database is empty, setting up defaults...");
-                const defaultMentors = [
-                    { name: "Dr. Sarah", identities: ["LGBTQ+", "Working-Class"], interest: "Computer Science", requests: [] },
-                    { name: "Prof. John", identities: ["First-Gen", "Working-Class"], interest: "Biology", requests: [] }
-                ];
-                defaultMentors.forEach(m => {
-                    db.collection("mentors").doc(m.name).set(m)
-                      .catch(err => alert("Firebase Error (Check your rules!): " + err.message));
+        // --- AUTHENTICATION LISTENER ---
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // Fetch full profile from Firestore
+                db.collection("users").doc(user.uid).get().then(doc => {
+                    if (doc.exists) {
+                        currentUserData = doc.data();
+                        currentUserData.uid = user.uid;
+                        loadAppropriateDashboard();
+                    }
                 });
             } else {
-                snapshot.forEach((doc) => {
-                    allMentors.push(doc.data());
-                });
-
-                if (document.getElementById('page-dashboard').classList.contains('active')) {
-                    loadDashboard();
-                }
+                currentUserData = null;
+                goToPage('page-landing');
             }
-        }, (error) => {
-            alert("Error connecting to Firebase Database. Did you update the Rules to allow read/write? Error: " + error.message);
         });
 
+        // --- NAVIGATION LOGIC ---
         function goToPage(pageId) {
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
         }
 
-        function login() {
-            const name = document.getElementById('login-name').value;
-            const user = allMentors.find(m => m.name.toLowerCase() === name.toLowerCase());
-            if (user) {
-                localStorage.setItem('currentUser', user.name);
-                loadDashboard();
-            } else {
-                alert("User not found! Check your spelling or sign up.");
+        // --- LOGIN & SIGNUP FUNCTIONS ---
+        function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-password').value;
+            const errLabel = document.getElementById('login-error');
+            
+            auth.signInWithEmailAndPassword(email, pass)
+                .catch(error => {
+                    errLabel.innerText = error.message;
+                    errLabel.style.display = 'block';
+                });
+        }
+
+        function startSignup(role) {
+            selectedSignupRole = role;
+            document.getElementById('signup-title').innerText = role === 'mentor' ? "Become a Mentor" : "Become a Mentee";
+            goToPage('page-signup');
+        }
+
+        function handleSignup() {
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-password').value;
+            const errLabel = document.getElementById('signup-error');
+
+            const profileData = {
+                role: selectedSignupRole,
+                name: document.getElementById('reg-name').value,
+                email: email,
+                picUrl: document.getElementById('reg-pic').value || "https://api.dicebear.com/7.x/initials/svg?seed=" + document.getElementById('reg-name').value,
+                field: document.getElementById('reg-field').value,
+                education: document.getElementById('reg-education').value,
+                experience: document.getElementById('reg-experience').value,
+                identities: Array.from(document.querySelectorAll('#reg-identities input:checked')).map(cb => cb.value),
+                skills: Array.from(document.querySelectorAll('#reg-skills input:checked')).map(cb => cb.value),
+                requests: [], // Array to hold incoming requests/connections
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            if(!profileData.name || !profileData.field) {
+                errLabel.innerText = "Please fill out all required fields.";
+                errLabel.style.display = 'block';
+                return;
             }
+
+            auth.createUserWithEmailAndPassword(email, pass)
+                .then(userCredential => {
+                    // Save additional data to Firestore
+                    return db.collection("users").doc(userCredential.user.uid).set(profileData);
+                })
+                .catch(error => {
+                    errLabel.innerText = error.message;
+                    errLabel.style.display = 'block';
+                });
         }
 
         function logout() {
-            localStorage.removeItem('currentUser');
+            auth.signOut();
             closeChat();
-            goToPage('page-home');
         }
 
-        function loadDashboard() {
-            const currentUserName = localStorage.getItem('currentUser');
-            if (!currentUserName) return goToPage('page-home');
-
-            const myProfile = allMentors.find(m => m.name === currentUserName);
-            if (!myProfile) return;
-
-            document.getElementById('dash-greeting').innerText = `Hello, ${myProfile.name}`;
-            document.getElementById('dash-field').innerText = `Field: ${myProfile.interest}`;
-            document.getElementById('dash-tags').innerText = `Identities: ${myProfile.identities.join(", ")}`;
-
-            const requestsDiv = document.getElementById('dash-requests');
-            requestsDiv.innerHTML = "";
-            document.getElementById('request-count').innerText = myProfile.requests ? myProfile.requests.length : 0;
-
-            if (!myProfile.requests || myProfile.requests.length === 0) {
-                requestsDiv.innerHTML = "<p style='color: #6b7280; font-size: 14px;'>No pending requests right now.</p>";
+        // --- DASHBOARD LOADERS ---
+        function loadAppropriateDashboard() {
+            if (currentUserData.role === 'mentor') {
+                document.getElementById('mentor-greeting').innerText = `Hello, ${currentUserData.name}`;
+                document.getElementById('mentor-avatar').src = currentUserData.picUrl;
+                loadMentorRequests();
+                goToPage('page-dash-mentor');
             } else {
-                myProfile.requests.forEach((req, index) => {
-                    requestsDiv.innerHTML += `
-                        <div class="dash-card request-card">
-                            <strong>${req.menteeName}</strong> wants to connect!
-                            <p style="margin: 5px 0; font-size: 13px; color: #4f46e5;">Match Score: ${req.score} 🔥</p>
-                            <p style="margin: 5px 0; font-size: 13px; font-style: italic;">"${req.message}"</p>
-                            <button class="btn btn-primary btn-small" onclick="acceptRequest(${index}, '${req.menteeName.replace(/'/g, "\\'")}', '${req.message.replace(/'/g, "\\'")}')">Accept</button>
-                            <button class="btn btn-secondary btn-small" onclick="declineRequest(${index})">Decline</button>
+                document.getElementById('mentee-greeting').innerText = `Hello, ${currentUserData.name}`;
+                document.getElementById('mentee-avatar').src = currentUserData.picUrl;
+                goToPage('page-dash-mentee');
+            }
+        }
+
+        function loadMentorRequests() {
+            // Realtime listener for requests
+            db.collection("users").doc(currentUserData.uid).onSnapshot(doc => {
+                const data = doc.data();
+                const reqArea = document.getElementById('mentor-requests-area');
+                document.getElementById('request-count').innerText = data.requests ? data.requests.length : 0;
+                
+                reqArea.innerHTML = "";
+                if (!data.requests || data.requests.length === 0) {
+                    reqArea.innerHTML = "<p style='color: #6b7280; font-size: 14px;'>No pending requests.</p>";
+                    return;
+                }
+
+                data.requests.forEach(req => {
+                    reqArea.innerHTML += `
+                        <div class="dash-card">
+                            <strong>${req.menteeName}</strong> requested to connect.
+                            <p style="margin: 5px 0; font-size: 12px; color: #4f46e5;">Match Score: ${req.score} 🔥</p>
+                            <button class="btn btn-primary btn-small" onclick="openChat('${req.menteeName}', 'Hi! I matched with you and would love to chat.')">Start Chat</button>
                         </div>
                     `;
                 });
-            }
-            goToPage('page-dashboard');
-        }
-
-        function saveMentor() {
-            const name = document.getElementById('new-mentor-name').value;
-            const field = document.getElementById('new-mentor-field').value;
-            const checkedBoxes = document.querySelectorAll('#new-mentor-identities input[type="checkbox"]:checked');
-            const identities = Array.from(checkedBoxes).map(cb => cb.value);
-
-            if (!name) return alert("Please enter a name!");
-
-            const newMentor = { 
-                name: name, identities: identities, interest: field, 
-                requests: [
-                    { menteeName: "Alex (Mentee)", score: 95, message: "Hi! I saw we have shared experiences in your field. I'd love to chat!" }
-                ] 
-            };
-
-            db.collection("mentors").doc(name).set(newMentor).then(() => {
-                localStorage.setItem('currentUser', name);
-                document.getElementById('new-mentor-name').value = "";
-                checkedBoxes.forEach(cb => cb.checked = false);
-                loadDashboard();
-            }).catch((error) => {
-                alert("Could not save to database! Check your Firebase Rules. Error: " + error.message);
             });
         }
 
+        // --- ADVANCED MATCHING ALGORITHM ---
         function runMatchingAlgorithm() {
-            const checkedBoxes = document.querySelectorAll('#mentee-identities input[type="checkbox"]:checked');
-            const menteeIdentities = Array.from(checkedBoxes).map(cb => cb.value);
-            const selectedField = document.getElementById('mentee-field').value;
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = ""; 
+            const resultsDiv = document.getElementById('match-results');
+            resultsDiv.innerHTML = "<p>Searching the database...</p>";
 
-            if (menteeIdentities.length === 0) return resultsDiv.innerHTML = "<p style='color:red;'>Select a marker.</p>";
+            const prefField = document.getElementById('match-field').value;
+            const prefExp = document.getElementById('match-exp').value;
+            const prefIdentities = Array.from(document.querySelectorAll('#match-identities input:checked')).map(cb => cb.value);
 
-            let scoredMentors = [];
-            
-            allMentors.forEach(mentor => {
-                let score = 0;
-                let reasons = [];
-                if(mentor.identities) {
-                    const shared = menteeIdentities.filter(id => mentor.identities.includes(id));
-                    if (shared.length > 0) { score += shared.length * 40; reasons.push(`Shared: ${shared.join(", ")}`); }
-                    if (selectedField !== "Any" && mentor.interest === selectedField) { score += 30; reasons.push(`Field: ${mentor.interest}`); }
-                    if (shared.length > 0) scoredMentors.push({ mentor, score, reasons });
-                }
+            // Fetch ALL mentors
+            db.collection("users").where("role", "==", "mentor").get().then(snapshot => {
+                let scoredMentors = [];
+
+                snapshot.forEach(doc => {
+                    const mentor = doc.data();
+                    let score = 0;
+                    let reasons = [];
+
+                    // 1. Shared Identities (Heavy Weight: 40 points each)
+                    if (mentor.identities) {
+                        const sharedIds = prefIdentities.filter(id => mentor.identities.includes(id));
+                        if (sharedIds.length > 0) { 
+                            score += sharedIds.length * 40; 
+                            reasons.push(`Shared Identity: ${sharedIds.join(", ")}`); 
+                        }
+                    }
+
+                    // 2. Field Match (30 points)
+                    if (prefField !== "Any" && mentor.field === prefField) {
+                        score += 30;
+                        reasons.push(`Same Field`);
+                    }
+
+                    // 3. Experience Match (20 points)
+                    if (prefExp !== "Any" && mentor.experience === prefExp) {
+                        score += 20;
+                        reasons.push(`Desired Experience Level`);
+                    }
+
+                    // 4. Mentee's own skills overlap (Bonus 10 points per shared skill)
+                    if (mentor.skills && currentUserData.skills) {
+                        const sharedSkills = currentUserData.skills.filter(sk => mentor.skills.includes(sk));
+                        if(sharedSkills.length > 0) {
+                            score += sharedSkills.length * 10;
+                            reasons.push(`Shared Skills: ${sharedSkills.length}`);
+                        }
+                    }
+
+                    if (score > 0) {
+                        scoredMentors.push({ id: doc.id, mentor, score, reasons });
+                    }
+                });
+
+                scoredMentors.sort((a, b) => b.score - a.score);
+                displayMatchResults(scoredMentors);
             });
+        }
 
-            scoredMentors.sort((a, b) => b.score - a.score);
+        function displayMatchResults(scoredMentors) {
+            const resultsDiv = document.getElementById('match-results');
+            resultsDiv.innerHTML = "";
 
-            if (scoredMentors.length === 0) return resultsDiv.innerHTML = "<p>No exact matches.</p>";
+            if (scoredMentors.length === 0) {
+                resultsDiv.innerHTML = "<p style='color: #6b7280;'>No strict matches found. Try broadening your criteria.</p>";
+                return;
+            }
 
             scoredMentors.forEach(match => {
                 resultsDiv.innerHTML += `
                     <div class="match-card">
-                        <div class="match-name">${match.mentor.name}</div>
-                        <div class="match-tags">${match.reasons.join(" | ")}</div>
-                        <div class="match-score">🔥 ${match.score} Match Score</div>
-                        <button class="btn btn-primary btn-small" style="margin-top: 10px;" onclick="sendConnectionRequest('${match.mentor.name}', ${match.score})">Request to Connect</button>
+                        <img src="${match.mentor.picUrl}" class="avatar" style="width: 50px; height: 50px;" alt="Avatar">
+                        <div class="match-info">
+                            <div class="match-name">${match.mentor.name} <span style="font-size: 12px; font-weight: normal; color: #6b7280;">(${match.mentor.experience})</span></div>
+                            <div class="match-tags">${match.mentor.field} • ${match.mentor.education}</div>
+                            <div class="match-tags" style="color: #4f46e5; margin-top: 2px;">${match.reasons.join(" | ")}</div>
+                            <div class="match-score">Score: ${match.score} 🔥</div>
+                            <button class="btn btn-secondary btn-small" onclick="sendRequest('${match.id}', ${match.score})">Send Request</button>
+                        </div>
                     </div>
                 `;
             });
         }
 
-        function sendConnectionRequest(mentorName, matchScore) {
-            const menteeName = prompt("Enter your name so the mentor knows who you are:");
-            if (!menteeName) return; 
-
-            const defaultMsg = `Hi ${mentorName}! I saw we have a great match score and would love to connect.`;
-            const message = prompt(`Add a short message for ${mentorName}:`, defaultMsg);
-            if (!message) return; 
-
-            const mentorRef = db.collection("mentors").doc(mentorName);
-            
-            mentorRef.get().then((doc) => {
-                if (doc.exists) {
-                    let mentorData = doc.data();
-                    if (!mentorData.requests) mentorData.requests = [];
-                    
-                    mentorData.requests.push({
-                        menteeName: menteeName + " (Mentee)", score: matchScore, message: message
-                    });
-                    
-                    mentorRef.set(mentorData).then(() => {
-                        alert(`Success! Your request has been sent securely to ${mentorName}.`);
-                    }).catch((error) => {
-                        alert("Error saving request: " + error.message);
-                    });
-                } else {
-                    alert("Oops! Couldn't find that mentor in the cloud.");
-                }
-            });
+        function sendRequest(mentorId, score) {
+            db.collection("users").doc(mentorId).update({
+                requests: firebase.firestore.FieldValue.arrayUnion({
+                    menteeId: currentUserData.uid,
+                    menteeName: currentUserData.name,
+                    score: score,
+                    timestamp: new Date().toISOString()
+                })
+            }).then(() => {
+                alert("Request sent successfully!");
+                goToPage('page-dash-mentee');
+            }).catch(err => alert("Error: " + err.message));
         }
 
-        function declineRequest(index) {
-            const currentUserName = localStorage.getItem('currentUser');
-            const mentorRef = db.collection("mentors").doc(currentUserName);
-            
-            mentorRef.get().then((doc) => {
-                if (doc.exists) {
-                    let mentorData = doc.data();
-                    if(mentorData.requests) {
-                        mentorData.requests.splice(index, 1); 
-                        mentorRef.set(mentorData); 
-                    }
-                }
-            });
-        }
-
-        function acceptRequest(index, menteeName, menteeMessage) {
-            declineRequest(index); 
-            openChat(menteeName, menteeMessage);
-        }
-
-        function openChat(menteeName, menteeMessage) {
+        // --- CHAT SYSTEM (Simplified Frontend Demo) ---
+        let currentChatUser = "";
+        function openChat(name, initialMsg) {
+            currentChatUser = name;
             document.getElementById('chat-widget').style.display = 'flex';
-            const cleanName = menteeName.replace(" (Mentee)", "");
-            document.getElementById('chat-title').innerText = cleanName;
-            
-            document.getElementById('chat-messages').innerHTML = `
-                <div class="message-bubble msg-mentee">${menteeMessage}</div>
-            `;
-
-            const hour = new Date().getHours();
-            let greeting = "Good evening";
-            if (hour < 12) greeting = "Good morning";
-            else if (hour < 18) greeting = "Good afternoon";
-
-            const quickRepliesDiv = document.getElementById('quick-replies');
-            quickRepliesDiv.style.display = 'flex';
-            quickRepliesDiv.innerHTML = `
-                <button class="quick-reply-btn" onclick="sendQuickReply('${greeting}, ${cleanName}! Thanks for reaching out.')">${greeting} 👋</button>
-                <button class="quick-reply-btn" onclick="sendQuickReply('Hi ${cleanName}, how can I help you today?')">How can I help?</button>
-                <button class="quick-reply-btn" onclick="sendQuickReply('I\\'d love to connect. Let\\'s set up a quick meeting.')">Set up meeting 📅</button>
-            `;
-        }
-
-        function sendQuickReply(text) {
-            printMyMessage(text);
-            document.getElementById('quick-replies').style.display = 'none';
-        }
-
-        function sendManualMessage() {
-            const inputField = document.getElementById('chat-input');
-            const text = inputField.value;
-            if (!text.trim()) return; 
-            printMyMessage(text);
-            inputField.value = ''; 
-        }
-
-        function printMyMessage(text) {
+            document.getElementById('chat-title').innerText = name;
             const messagesDiv = document.getElementById('chat-messages');
-            messagesDiv.innerHTML += `<div class="message-bubble msg-mentor">${text}</div>`;
-            messagesDiv.scrollTop = messagesDiv.scrollHeight; 
+            
+            messagesDiv.innerHTML = `<div class="message-bubble msg-them">${initialMsg}</div>`;
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const messagesDiv = document.getElementById('chat-messages');
+            messagesDiv.innerHTML += `<div class="message-bubble msg-me">${text}</div>`;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            input.value = "";
         }
 
         function closeChat() { document.getElementById('chat-widget').style.display = 'none'; }
-        function handleEnterKey(event) { if (event.key === 'Enter') sendManualMessage(); }
     </script>
 </body>
 </html>
