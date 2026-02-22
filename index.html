@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Match</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f3f4f6; display: flex; justify-content: center; padding: 20px; }
+        .app-container { background: white; width: 100%; max-width: 400px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 30px; position: relative; margin-bottom: 80px;}
+        h2 { text-align: center; color: #111827; margin-bottom: 5px; }
+        p.subtitle { color: #6b7280; font-size: 14px; text-align: center; margin-bottom: 20px; }
+        
+        .section-label { font-weight: bold; margin-top: 20px; display: block; color: #374151; font-size: 14px; margin-bottom: 10px;}
+        input[type="text"], select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #d1d5db; font-size: 14px; background-color: #f9fafb; margin-bottom: 10px; box-sizing: border-box; }
+        
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .checkbox-label { background: #f3f4f6; padding: 8px 12px; border-radius: 20px; font-size: 14px; cursor: pointer; border: 1px solid #d1d5db; transition: 0.2s; }
+        .checkbox-label:hover { background: #e5e7eb; }
+        input[type="checkbox"] { display: none; }
+        input[type="checkbox"]:checked + .checkbox-label { background: #4f46e5; color: white; border-color: #4f46e5; }
+
+        .btn { border: none; padding: 15px; width: 100%; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px; text-align: center; display: block;}
+        .btn-primary { background: #111827; color: white; }
+        .btn-primary:hover { background: #374151; }
+        .btn-secondary { background: #e5e7eb; color: #111827; }
+        .btn-secondary:hover { background: #d1d5db; }
+        .btn-small { padding: 8px; font-size: 12px; width: auto; display: inline-block; margin-top: 0; }
+        
+        .page { display: none; }
+        .page.active { display: block; }
+        .back-link { font-size: 14px; color: #4f46e5; cursor: pointer; display: inline-block; margin-bottom: 15px; text-decoration: underline; font-weight: bold;}
+
+        /* Dashboard & Cards */
+        .dash-card { background: #f9fafb; border: 1px solid #e5e7eb; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        .request-card { border-left: 4px solid #4f46e5; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .badge { background: #4f46e5; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: bold; float: right; }
+        .match-card { background: #f9fafb; border: 1px solid #e5e7eb; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
+        .match-name { font-weight: bold; font-size: 18px; color: #111827; }
+        .match-tags { font-size: 13px; color: #4f46e5; margin-top: 5px; font-weight: 500;}
+        .match-score { color: #059669; font-weight: bold; font-size: 14px; margin-top: 8px; }
+
+        /* Chat Widget Styles */
+        .chat-widget { position: fixed; bottom: 20px; right: 20px; width: 320px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: none; flex-direction: column; z-index: 1000; border: 1px solid #d1d5db; overflow: hidden;}
+        .chat-header { background: #111827; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 15px; }
+        .close-chat { cursor: pointer; color: #9ca3af; font-size: 18px; }
+        .close-chat:hover { color: white; }
+        .chat-messages { padding: 15px; height: 220px; overflow-y: auto; background: #f9fafb; display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
+        .message-bubble { padding: 10px 14px; border-radius: 18px; max-width: 80%; line-height: 1.4; }
+        .msg-mentee { background: #e5e7eb; color: #111827; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .msg-mentor { background: #4f46e5; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .quick-replies { display: flex; gap: 8px; padding: 10px; background: white; overflow-x: auto; white-space: nowrap; border-top: 1px solid #e5e7eb; }
+        .quick-reply-btn { background: white; border: 1px solid #4f46e5; color: #4f46e5; border-radius: 15px; padding: 6px 12px; font-size: 12px; cursor: pointer; flex-shrink: 0; font-weight: 500;}
+        .quick-reply-btn:hover { background: #4f46e5; color: white; }
+        .chat-input-area { display: flex; padding: 10px; background: white; border-top: 1px solid #e5e7eb; }
+        .chat-input-area input { flex: 1; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 20px; font-size: 13px; outline: none; background: #f9fafb;}
+        .chat-input-area button { background: none; border: none; color: #4f46e5; font-weight: bold; margin-left: 10px; cursor: pointer; font-size: 14px;}
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <div id="page-home" class="page active">
+            <h2>Academic Match</h2>
+            <p class="subtitle">Connecting the academic community</p>
+            <button class="btn btn-primary" onclick="goToPage('page-match')">Find a Mentor (Mentee)</button>
+            <button class="btn btn-secondary" onclick="goToPage('page-signup')">Sign Up as Mentor</button>
+            <button class="btn btn-secondary" onclick="goToPage('page-login')">Log In to Dashboard</button>
+        </div>
+
+        <div id="page-login" class="page">
+            <span class="back-link" onclick="goToPage('page-home')">← Back</span>
+            <h2>Log In</h2>
+            <p class="subtitle">Enter your name to access your dashboard</p>
+            <span class="section-label">Your Name:</span>
+            <input type="text" id="login-name" placeholder="e.g. Dr. Sarah">
+            <button class="btn btn-primary" onclick="login()">Log In</button>
+        </div>
+
+        <div id="page-signup" class="page">
+            <span class="back-link" onclick="goToPage('page-home')">← Back</span>
+            <h2>Become a Mentor</h2>
+            <span class="section-label">Your Name / Title:</span>
+            <input type="text" id="new-mentor-name" placeholder="e.g. Dr. Smith">
+            <span class="section-label">Your Academic Field:</span>
+            <select id="new-mentor-field">
+                <option value="Computer Science">Computer Science</option>
+                <option value="Biology">Biology</option>
+                <option value="Law">Law</option>
+                <option value="Arts">Arts & Humanities</option>
+            </select>
+            <span class="section-label">Your Lived Experiences:</span>
+            <div class="checkbox-group" id="new-mentor-identities">
+                <input type="checkbox" id="m-fg" value="First-Gen"><label class="checkbox-label" for="m-fg">First-Gen</label>
+                <input type="checkbox" id="m-lgbt" value="LGBTQ+"><label class="checkbox-label" for="m-lgbt">LGBTQ+</label>
+                <input type="checkbox" id="m-wc" value="Working-Class"><label class="checkbox-label" for="m-wc">Working-Class</label>
+                <input type="checkbox" id="m-nd" value="Neurodivergent"><label class="checkbox-label" for="m-nd">Neurodivergent</label>
+            </div>
+            <button class="btn btn-primary" onclick="saveMentor()">Create Profile</button>
+        </div>
+
+        <div id="page-dashboard" class="page">
+            <span class="back-link" onclick="logout()" style="color: #dc2626;">Log Out</span>
+            <h2 id="dash-greeting" style="text-align: left;">Welcome!</h2>
+            <div class="dash-card">
+                <span class="section-label" style="margin-top: 0;">Your Public Profile:</span>
+                <strong id="dash-field">Field</strong><br>
+                <span id="dash-tags" style="color: #6b7280; font-size: 13px;">Tags</span>
+            </div>
+            <h3>Connection Requests <span class="badge" id="request-count">0</span></h3>
+            <div id="dash-requests"></div>
+        </div>
+
+        <div id="page-match" class="page">
+            <span class="back-link" onclick="goToPage('page-home')">← Back</span>
+            <h2>Find Your Mentor</h2>
+            <span class="section-label">My Academic Field is:</span>
+            <select id="mentee-field">
+                <option value="Any">Does not matter / Any</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Biology">Biology</option>
+                <option value="Law">Law</option>
+                <option value="Arts">Arts & Humanities</option>
+            </select>
+            <span class="section-label">I identify as / have experience with:</span>
+            <div class="checkbox-group" id="mentee-identities">
+                <input type="checkbox" id="fg" value="First-Gen"><label class="checkbox-label" for="fg">First-Gen</label>
+                <input type="checkbox" id="lgbt" value="LGBTQ+"><label class="checkbox-label" for="lgbt">LGBTQ+</label>
+                <input type="checkbox" id="wc" value="Working-Class"><label class="checkbox-label" for="wc">Working-Class</label>
+                <input type="checkbox" id="nd" value="Neurodivergent"><label class="checkbox-label" for="nd">Neurodivergent</label>
+            </div>
+            <button class="btn btn-primary" onclick="runMatchingAlgorithm()">Find Matches</button>
+            <div id="results"></div>
+        </div>
+
+    </div>
+
+    <div id="chat-widget" class="chat-widget">
+        <div class="chat-header">
+            <span id="chat-title">Chat</span>
+            <span class="close-chat" onclick="closeChat()">×</span>
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="quick-replies" id="quick-replies"></div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="handleEnterKey(event)">
+            <button onclick="sendManualMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const defaultMentors = [
+            { name: "Dr. Sarah", identities: ["LGBTQ+", "Working-Class"], interest: "Computer Science", requests: [] },
+            { name: "Prof. John", identities: ["First-Gen", "Working-Class"], interest: "Biology", requests: [] }
+        ];
+
+        function getDatabase() {
+            let storedData = localStorage.getItem('academicMatchDB');
+            if (!storedData) {
+                localStorage.setItem('academicMatchDB', JSON.stringify(defaultMentors));
+                storedData = localStorage.getItem('academicMatchDB'); 
+            }
+            return JSON.parse(storedData);
+        }
+
+        function saveDatabase(db) {
+            localStorage.setItem('academicMatchDB', JSON.stringify(db));
+        }
+
+        function goToPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function login() {
+            const name = document.getElementById('login-name').value;
+            const db = getDatabase();
+            const user = db.find(m => m.name.toLowerCase() === name.toLowerCase());
+            if (user) {
+                localStorage.setItem('currentUser', user.name);
+                loadDashboard();
+            } else {
+                alert("User not found! Check your spelling or sign up.");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            closeChat();
+            goToPage('page-home');
+        }
+
+        function loadDashboard() {
+            const currentUserName = localStorage.getItem('currentUser');
+            if (!currentUserName) return goToPage('page-home');
+
+            const db = getDatabase();
+            const myProfile = db.find(m => m.name === currentUserName);
+
+            document.getElementById('dash-greeting').innerText = `Hello, ${myProfile.name}`;
+            document.getElementById('dash-field').innerText = `Field: ${myProfile.interest}`;
+            document.getElementById('dash-tags').innerText = `Identities: ${myProfile.identities.join(", ")}`;
+
+            const requestsDiv = document.getElementById('dash-requests');
+            requestsDiv.innerHTML = "";
+            document.getElementById('request-count').innerText = myProfile.requests.length;
+
+            if (myProfile.requests.length === 0) {
+                requestsDiv.innerHTML = "<p style='color: #6b7280; font-size: 14px;'>No pending requests right now.</p>";
+            } else {
+                myProfile.requests.forEach((req, index) => {
+                    requestsDiv.innerHTML += `
+                        <div class="dash-card request-card">
+                            <strong>${req.menteeName}</strong> wants to connect!
+                            <p style="margin: 5px 0; font-size: 13px; color: #4f46e5;">Match Score: ${req.score} 🔥</p>
+                            <p style="margin: 5px 0; font-size: 13px; font-style: italic;">"${req.message}"</p>
+                            <button class="btn btn-primary btn-small" onclick="acceptRequest(${index}, '${req.menteeName}', '${req.message}')">Accept</button>
+                            <button class="btn btn-secondary btn-small" onclick="declineRequest(${index})">Decline</button>
+                        </div>
+                    `;
+                });
+            }
+            goToPage('page-dashboard');
+        }
+
+        function saveMentor() {
+            const name = document.getElementById('new-mentor-name').value;
+            const field = document.getElementById('new-mentor-field').value;
+            const checkedBoxes = document.querySelectorAll('#new-mentor-identities input[type="checkbox"]:checked');
+            const identities = Array.from(checkedBoxes).map(cb => cb.value);
+
+            if (!name) return alert("Please enter a name!");
+
+            const newMentor = { 
+                name: name, identities: identities, interest: field, 
+                requests: [
+                    { menteeName: "Alex (Mentee)", score: 95, message: "Hi! I saw we have shared experiences in your field. I'd love to chat!" }
+                ] 
+            };
+
+            const db = getDatabase();
+            db.push(newMentor);
+            saveDatabase(db);
+
+            localStorage.setItem('currentUser', name);
+            document.getElementById('new-mentor-name').value = "";
+            checkedBoxes.forEach(cb => cb.checked = false);
+            
+            loadDashboard();
+        }
+
+        function runMatchingAlgorithm() {
+            const checkedBoxes = document.querySelectorAll('#mentee-identities input[type="checkbox"]:checked');
+            const menteeIdentities = Array.from(checkedBoxes).map(cb => cb.value);
+            const selectedField = document.getElementById('mentee-field').value;
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = ""; 
+
+            if (menteeIdentities.length === 0) return resultsDiv.innerHTML = "<p style='color:red;'>Select a marker.</p>";
+
+            const allMentors = getDatabase();
+            let scoredMentors = [];
+            
+            allMentors.forEach(mentor => {
+                let score = 0;
+                let reasons = [];
+                const shared = menteeIdentities.filter(id => mentor.identities.includes(id));
+                if (shared.length > 0) { score += shared.length * 40; reasons.push(`Shared: ${shared.join(", ")}`); }
+                if (selectedField !== "Any" && mentor.interest === selectedField) { score += 30; reasons.push(`Field: ${mentor.interest}`); }
+                if (shared.length > 0) scoredMentors.push({ mentor, score, reasons });
+            });
+
+            scoredMentors.sort((a, b) => b.score - a.score);
+
+            if (scoredMentors.length === 0) return resultsDiv.innerHTML = "<p>No exact matches.</p>";
+
+            scoredMentors.forEach(match => {
+                // Here is the newly wired "Request to Connect" button!
+                resultsDiv.innerHTML += `
+                    <div class="match-card">
+                        <div class="match-name">${match.mentor.name}</div>
+                        <div class="match-tags">${match.reasons.join(" | ")}</div>
+                        <div class="match-score">🔥 ${match.score} Match Score</div>
+                        <button class="btn btn-primary btn-small" style="margin-top: 10px;" onclick="sendConnectionRequest('${match.mentor.name}', ${match.score})">Request to Connect</button>
+                    </div>
+                `;
+            });
+        }
+
+        // --- THE NEW TWO-WAY CONNECTION LOGIC ---
+        function sendConnectionRequest(mentorName, matchScore) {
+            // 1. Ask the mentee for their details
+            const menteeName = prompt("Enter your name so the mentor knows who you are:");
+            if (!menteeName) return; // If they click cancel, stop here.
+
+            const defaultMsg = `Hi ${mentorName}! I saw we have a great match score and would love to connect.`;
+            const message = prompt(`Add a short message for ${mentorName}:`, defaultMsg);
+            if (!message) return; // If they click cancel, stop here.
+
+            // 2. Open the database and find the mentor
+            const db = getDatabase();
+            const mentorIndex = db.findIndex(m => m.name === mentorName);
+
+            if (mentorIndex !== -1) {
+                // 3. Push the new request directly into their inbox
+                db[mentorIndex].requests.push({
+                    menteeName: menteeName + " (Mentee)",
+                    score: matchScore,
+                    message: message
+                });
+                
+                // 4. Save and confirm
+                saveDatabase(db);
+                alert(`Success! Your request has been sent to ${mentorName}.`);
+            } else {
+                alert("Oops! Couldn't find that mentor in the database.");
+            }
+        }
+
+        // --- CHAT & DASHBOARD LOGIC (Same as before) ---
+        function declineRequest(index) {
+            const currentUserName = localStorage.getItem('currentUser');
+            const db = getDatabase();
+            const myProfileIndex = db.findIndex(m => m.name === currentUserName);
+            db[myProfileIndex].requests.splice(index, 1);
+            saveDatabase(db);
+            loadDashboard();
+        }
+
+        function acceptRequest(index, menteeName, menteeMessage) {
+            declineRequest(index); 
+            openChat(menteeName, menteeMessage);
+        }
+
+        function openChat(menteeName, menteeMessage) {
+            document.getElementById('chat-widget').style.display = 'flex';
+            const cleanName = menteeName.replace(" (Mentee)", "");
+            document.getElementById('chat-title').innerText = cleanName;
+            
+            document.getElementById('chat-messages').innerHTML = `
+                <div class="message-bubble msg-mentee">${menteeMessage}</div>
+            `;
+
+            const hour = new Date().getHours();
+            let greeting = "Good evening";
+            if (hour < 12) greeting = "Good morning";
+            else if (hour < 18) greeting = "Good afternoon";
+
+            const quickRepliesDiv = document.getElementById('quick-replies');
+            quickRepliesDiv.style.display = 'flex';
+            quickRepliesDiv.innerHTML = `
+                <button class="quick-reply-btn" onclick="sendQuickReply('${greeting}, ${cleanName}! Thanks for reaching out.')">${greeting} 👋</button>
+                <button class="quick-reply-btn" onclick="sendQuickReply('Hi ${cleanName}, how can I help you today?')">How can I help?</button>
+                <button class="quick-reply-btn" onclick="sendQuickReply('I\\'d love to connect. Let\\'s set up a quick meeting.')">Set up meeting 📅</button>
+            `;
+        }
+
+        function sendQuickReply(text) {
+            printMyMessage(text);
+            document.getElementById('quick-replies').style.display = 'none';
+        }
+
+        function sendManualMessage() {
+            const inputField = document.getElementById('chat-input');
+            const text = inputField.value;
+            if (!text.trim()) return; 
+            printMyMessage(text);
+            inputField.value = ''; 
+        }
+
+        function printMyMessage(text) {
+            const messagesDiv = document.getElementById('chat-messages');
+            messagesDiv.innerHTML += `<div class="message-bubble msg-mentor">${text}</div>`;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; 
+        }
+
+        function closeChat() { document.getElementById('chat-widget').style.display = 'none'; }
+        function handleEnterKey(event) { if (event.key === 'Enter') sendManualMessage(); }
+    </script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyACiQg1a-8rgor7GyjBr1k_wN3ZB4IhdLA",
+    authDomain: "orbit-d5471.firebaseapp.com",
+    projectId: "orbit-d5471",
+    storageBucket: "orbit-d5471.firebasestorage.app",
+    messagingSenderId: "399971601597",
+    appId: "1:399971601597:web:6a3846804f35801214bbd4",
+    measurementId: "G-7XHJF7GEQ8"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+</body>
+</html>
