@@ -150,15 +150,15 @@
     </div>
 
     <script>
-        // --- 1. INITIALIZE FIREBASE WITH YOUR FRIEND'S KEYS ---
+        // --- 1. INITIALIZE FIREBASE WITH YOUR UPDATED KEYS ---
         const firebaseConfig = {
-            apiKey: "AIzaSyACiQg1a-8rgor7GyjBr1k_wN3ZB4IhdLA",
-            authDomain: "orbit-d5471.firebaseapp.com",
-            projectId: "orbit-d5471",
-            storageBucket: "orbit-d5471.firebasestorage.app",
-            messagingSenderId: "399971601597",
-            appId: "1:399971601597:web:6a3846804f35801214bbd4",
-            measurementId: "G-7XHJF7GEQ8"
+            apiKey: "AIzaSyACiQg1a-8rgor7GyjBr1k_wN3ZB4IhdLA", // <-- Check if your friend generated a new apiKey for orbit-5b9da
+            authDomain: "orbit-5b9da.firebaseapp.com",
+            projectId: "orbit-5b9da",
+            storageBucket: "orbit-5b9da.firebasestorage.app",
+            messagingSenderId: "399971601597", // <-- Check if this changed
+            appId: "1:399971601597:web:6a3846804f35801214bbd4", // <-- Check if this changed
+            measurementId: "G-7XHJF7GEQ8" // <-- Check if this changed
         };
         
         firebase.initializeApp(firebaseConfig);
@@ -173,12 +173,16 @@
             allMentors = []; 
             
             if (snapshot.empty) {
+                console.log("Database is empty, setting up defaults...");
                 // If the cloud is empty, add some starter data
                 const defaultMentors = [
                     { name: "Dr. Sarah", identities: ["LGBTQ+", "Working-Class"], interest: "Computer Science", requests: [] },
                     { name: "Prof. John", identities: ["First-Gen", "Working-Class"], interest: "Biology", requests: [] }
                 ];
-                defaultMentors.forEach(m => db.collection("mentors").doc(m.name).set(m));
+                defaultMentors.forEach(m => {
+                    db.collection("mentors").doc(m.name).set(m)
+                      .catch(err => alert("Firebase Error (Check your rules!): " + err.message));
+                });
             } else {
                 snapshot.forEach((doc) => {
                     allMentors.push(doc.data());
@@ -189,6 +193,8 @@
                     loadDashboard();
                 }
             }
+        }, (error) => {
+            alert("Error connecting to Firebase Database. Did you update the Rules to allow read/write? Error: " + error.message);
         });
 
         // --- UI NAVIGATION ---
@@ -228,9 +234,9 @@
 
             const requestsDiv = document.getElementById('dash-requests');
             requestsDiv.innerHTML = "";
-            document.getElementById('request-count').innerText = myProfile.requests.length;
+            document.getElementById('request-count').innerText = myProfile.requests.length || 0;
 
-            if (myProfile.requests.length === 0) {
+            if (!myProfile.requests || myProfile.requests.length === 0) {
                 requestsDiv.innerHTML = "<p style='color: #6b7280; font-size: 14px;'>No pending requests right now.</p>";
             } else {
                 myProfile.requests.forEach((req, index) => {
@@ -267,6 +273,8 @@
                 document.getElementById('new-mentor-name').value = "";
                 checkedBoxes.forEach(cb => cb.checked = false);
                 loadDashboard();
+            }).catch((error) => {
+                alert("Could not save to database! Check your Firebase Rules. Error: " + error.message);
             });
         }
 
@@ -285,10 +293,13 @@
             allMentors.forEach(mentor => {
                 let score = 0;
                 let reasons = [];
-                const shared = menteeIdentities.filter(id => mentor.identities.includes(id));
-                if (shared.length > 0) { score += shared.length * 40; reasons.push(`Shared: ${shared.join(", ")}`); }
-                if (selectedField !== "Any" && mentor.interest === selectedField) { score += 30; reasons.push(`Field: ${mentor.interest}`); }
-                if (shared.length > 0) scoredMentors.push({ mentor, score, reasons });
+                // Check if identities exists before filtering
+                if(mentor.identities) {
+                    const shared = menteeIdentities.filter(id => mentor.identities.includes(id));
+                    if (shared.length > 0) { score += shared.length * 40; reasons.push(`Shared: ${shared.join(", ")}`); }
+                    if (selectedField !== "Any" && mentor.interest === selectedField) { score += 30; reasons.push(`Field: ${mentor.interest}`); }
+                    if (shared.length > 0) scoredMentors.push({ mentor, score, reasons });
+                }
             });
 
             scoredMentors.sort((a, b) => b.score - a.score);
@@ -320,12 +331,16 @@
             mentorRef.get().then((doc) => {
                 if (doc.exists) {
                     let mentorData = doc.data();
+                    if (!mentorData.requests) mentorData.requests = [];
+                    
                     mentorData.requests.push({
                         menteeName: menteeName + " (Mentee)", score: matchScore, message: message
                     });
                     
                     mentorRef.set(mentorData).then(() => {
                         alert(`Success! Your request has been sent securely to ${mentorName}.`);
+                    }).catch((error) => {
+                        alert("Error saving request: " + error.message);
                     });
                 } else {
                     alert("Oops! Couldn't find that mentor in the cloud.");
@@ -340,8 +355,10 @@
             mentorRef.get().then((doc) => {
                 if (doc.exists) {
                     let mentorData = doc.data();
-                    mentorData.requests.splice(index, 1); 
-                    mentorRef.set(mentorData); // Save back to cloud
+                    if(mentorData.requests) {
+                        mentorData.requests.splice(index, 1); 
+                        mentorRef.set(mentorData); // Save back to cloud
+                    }
                 }
             });
         }
