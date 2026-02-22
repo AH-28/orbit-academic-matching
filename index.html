@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academic Match</title>
+    <title>Orbit</title>
     <style>
         body { font-family: Arial, Helvetica, sans-serif, "Segoe UI", Roboto, sans-serif; background-color: #f3f4f6; display: flex; justify-content: center; padding: 20px; }
         .app-container { background: white; width: 100%; max-width: 400px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 30px; position: relative; margin-bottom: 80px;}
@@ -39,7 +39,7 @@
         .match-tags { font-size: 13px; color: #4f46e5; margin-top: 5px; font-weight: 500;}
         .match-score { color: #059669; font-weight: bold; font-size: 14px; margin-top: 8px; }
 
-        /* Chat Widget */
+        /* Chat Widget Styles */
         .chat-widget { position: fixed; bottom: 20px; right: 20px; width: 320px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: none; flex-direction: column; z-index: 1000; border: 1px solid #d1d5db; overflow: hidden;}
         .chat-header { background: #111827; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 15px; }
         .close-chat { cursor: pointer; color: #9ca3af; font-size: 18px; }
@@ -55,13 +55,11 @@
         .chat-input-area input { flex: 1; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 20px; font-size: 13px; outline: none; background: #f9fafb;}
         .chat-input-area button { background: none; border: none; color: #4f46e5; font-weight: bold; margin-left: 10px; cursor: pointer; font-size: 14px;}
     </style>
-
-    <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
     <div class="app-container">
+        
         <div id="page-home" class="page active">
             <h2>Academic Match</h2>
             <p class="subtitle">Connecting the academic community</p>
@@ -134,6 +132,7 @@
             <button class="btn btn-primary" onclick="runMatchingAlgorithm()">Find Matches</button>
             <div id="results"></div>
         </div>
+
     </div>
 
     <div id="chat-widget" class="chat-widget">
@@ -197,16 +196,15 @@
             alert("Error connecting to Firebase Database. Did you update the Rules to allow read/write? Error: " + error.message);
         });
 
-        // --- UI NAVIGATION ---
         function goToPage(pageId) {
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
         }
 
-        // --- AUTH & PROFILES ---
         function login() {
             const name = document.getElementById('login-name').value;
-            const user = allMentors.find(m => m.name.toLowerCase() === name.toLowerCase());
+            const db = getDatabase();
+            const user = db.find(m => m.name.toLowerCase() === name.toLowerCase());
             if (user) {
                 localStorage.setItem('currentUser', user.name);
                 loadDashboard();
@@ -225,8 +223,8 @@
             const currentUserName = localStorage.getItem('currentUser');
             if (!currentUserName) return goToPage('page-home');
 
-            const myProfile = allMentors.find(m => m.name === currentUserName);
-            if (!myProfile) return;
+            const db = getDatabase();
+            const myProfile = db.find(m => m.name === currentUserName);
 
             document.getElementById('dash-greeting').innerText = `Hello, ${myProfile.name}`;
             document.getElementById('dash-field').innerText = `Field: ${myProfile.interest}`;
@@ -264,7 +262,9 @@
 
             const newMentor = { 
                 name: name, identities: identities, interest: field, 
-                requests: [{ menteeName: "Alex (Mentee)", score: 95, message: "Hi! This is a test message to show your inbox works!" }] 
+                requests: [
+                    { menteeName: "Alex (Mentee)", score: 95, message: "Hi! I saw we have shared experiences in your field. I'd love to chat!" }
+                ] 
             };
 
             // Push the new user to the Cloud!
@@ -278,7 +278,6 @@
             });
         }
 
-        // --- MATCHING & REQUESTS ---
         function runMatchingAlgorithm() {
             const checkedBoxes = document.querySelectorAll('#mentee-identities input[type="checkbox"]:checked');
             const menteeIdentities = Array.from(checkedBoxes).map(cb => cb.value);
@@ -288,6 +287,7 @@
 
             if (menteeIdentities.length === 0) return resultsDiv.innerHTML = "<p style='color:red;'>Select a marker.</p>";
 
+            const allMentors = getDatabase();
             let scoredMentors = [];
             
             allMentors.forEach(mentor => {
@@ -303,9 +303,11 @@
             });
 
             scoredMentors.sort((a, b) => b.score - a.score);
+
             if (scoredMentors.length === 0) return resultsDiv.innerHTML = "<p>No exact matches.</p>";
 
             scoredMentors.forEach(match => {
+                // Here is the newly wired "Request to Connect" button!
                 resultsDiv.innerHTML += `
                     <div class="match-card">
                         <div class="match-name">${match.mentor.name}</div>
@@ -317,13 +319,15 @@
             });
         }
 
+        // --- THE NEW TWO-WAY CONNECTION LOGIC ---
         function sendConnectionRequest(mentorName, matchScore) {
+            // 1. Ask the mentee for their details
             const menteeName = prompt("Enter your name so the mentor knows who you are:");
-            if (!menteeName) return; 
+            if (!menteeName) return; // If they click cancel, stop here.
 
             const defaultMsg = `Hi ${mentorName}! I saw we have a great match score and would love to connect.`;
             const message = prompt(`Add a short message for ${mentorName}:`, defaultMsg);
-            if (!message) return;
+            if (!message) return; // If they click cancel, stop here.
 
             // Update the specific mentor in the cloud!
             const mentorRef = db.collection("mentors").doc(mentorName);
@@ -348,6 +352,7 @@
             });
         }
 
+        // --- CHAT & DASHBOARD LOGIC (Same as before) ---
         function declineRequest(index) {
             const currentUserName = localStorage.getItem('currentUser');
             const mentorRef = db.collection("mentors").doc(currentUserName);
@@ -368,7 +373,6 @@
             openChat(menteeName, menteeMessage);
         }
 
-        // --- CHAT WIDGET ---
         function openChat(menteeName, menteeMessage) {
             document.getElementById('chat-widget').style.display = 'flex';
             const cleanName = menteeName.replace(" (Mentee)", "");
@@ -414,5 +418,28 @@
         function closeChat() { document.getElementById('chat-widget').style.display = 'none'; }
         function handleEnterKey(event) { if (event.key === 'Enter') sendManualMessage(); }
     </script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyACiQg1a-8rgor7GyjBr1k_wN3ZB4IhdLA",
+    authDomain: "orbit-d5471.firebaseapp.com",
+    projectId: "orbit-d5471",
+    storageBucket: "orbit-d5471.firebasestorage.app",
+    messagingSenderId: "399971601597",
+    appId: "1:399971601597:web:6a3846804f35801214bbd4",
+    measurementId: "G-7XHJF7GEQ8"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 </body>
 </html>
